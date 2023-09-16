@@ -1,0 +1,76 @@
+
+// Custom Theming for Angular Material
+// For more information: https://material.angular.io/guide/theming
+@use '@angular/material' as mat;
+// Plus imports for other components in your app.
+
+// Include the common styles for Angular Material. We include this here so that you only
+// have to load a single css file for Angular Material in your app.
+// Be sure that you only ever include this mixin once!
+@include mat.core();
+
+// Define the palettes for your theme using the Material Design palettes available in palette.scss
+// (imported above). For each palette, you can optionally specify a default, lighter, and darker
+// hue. Available color palettes: https://material.io/design/color/
+$SeaTrack-primary: mat.define-palette(mat.$indigo-palette);
+$SeaTrack-accent: mat.define-palette(mat.$blue-palette);
+
+// dark colors
+$darkTheme-primary: mat.define-palette(mat.$grey-palette, 900,500,800);
+$darkTheme-accent: mat.define-palette(mat.$grey-palette, 400,200,300);
+$darkTheme-warn: mat.define-palette(mat.$red-palette);
+// The warn palette is optional (defaults to red).
+$SeaTrack-warn: mat.define-palette(mat.$red-palette);
+
+// Create the theme object. A theme consists of configurations for individual
+// theming systems such as "color" or "typography".
+$SeaTrack-theme: mat.define-light-theme((
+  color: (
+    primary: $SeaTrack-primary,
+    accent: $SeaTrack-accent,
+    warn: $SeaTrack-warn,
+  )
+));
+// Dark Theme
+$darkTheme-theme: mat.define-dark-theme((
+  color: (
+    primary: $darkTheme-primary,
+    accent: $darkTheme-accent,
+    warn: $darkTheme-warn
+  )
+));
+// Include theme styles for core and each component used in your app.
+// Alternatively, you can import and @include the theme mixins for each component
+// that you are using.
+.darkTheme-primary {
+  background-color: #212121;
+  color: white;
+}
+.darkTheme-accent {
+  background-color: #424242;
+  color: white;
+}
+.darkTheme-hover {
+  :hover {
+    background-color: #616161;
+  }
+}
+.lightTheme-primary {
+  background-color: #3F51B5;
+  color: black;
+}
+.lightTheme-accent {
+  background-color: #2196F3;
+  color: black;
+}
+.lightTheme-hover {
+  :hover {
+    background-color: #5C6BC0;
+  }
+}
+// @include mat.all-component-themes($darkTheme-theme);
+
+/* You can add global styles to this file, and also import other style files */
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

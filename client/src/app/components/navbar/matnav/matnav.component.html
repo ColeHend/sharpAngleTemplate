@@ -1,0 +1,34 @@
+<mat-toolbar [class]="primaryTheme | async" color="primary">
+    <mat-toolbar-row>
+        <span>{{sitename | async}}</span>
+        <span class="example-spacer"></span>
+        <button mat-icon-button class="example-icon" [matMenuTriggerFor]="menu"
+            aria-label="icon-button with menu icon">
+            <mat-icon>menu</mat-icon>
+        </button>
+    </mat-toolbar-row>
+
+    <mat-toolbar-row [class]="accentTheme | async" *ngIf="showSecondRow | async">
+        <span *ngIf="showText | async">{{secondText | async}}</span>
+        <mat-tab-group [class]="accentTheme | async" *ngIf="showTabs | async" [selectedIndex]="tabIndex | async" (selectedIndexChange)="setTabIndex($event)">
+            <mat-tab class="color" *ngFor="let tab of tabs | async" (click)="validCallback(tab.callback)" [class]="accentHover" [label]="tab.name"></mat-tab>
+        </mat-tab-group>
+        <span class="example-spacer"></span>
+
+        <button mat-icon-button *ngFor="let theIcon of secondIcons | async" [matTooltip]="theIcon.tooltip ?? ''" (click)="theIcon.callback"
+            class="example-icon favorite-icon" aria-label="icon-button with icon">
+            <mat-icon >{{theIcon.iconName}}</mat-icon>
+        </button>
+    </mat-toolbar-row>
+</mat-toolbar>
+<mat-menu [class]="(primaryTheme | async) ?? ''" #menu="matMenu">
+    <button mat-menu-item *ngFor="let item of menuItems | async" [matTooltip]="item.tooltip ?? ''" matTooltipPosition="left" [class]="primaryHover" (click)="validCallback(item.callback)">{{item.name}}</button>
+</mat-menu>
+<ng-container *ngIf="showTabs | async">
+    <ng-container *ngFor="let type of tabs | async; index as i">
+        <ng-container *ngIf="i === (tabIndex | async)">
+            <ng-container *ngComponentOutlet="type.component"></ng-container>
+        </ng-container>
+    </ng-container>
+</ng-container>
+<ng-content></ng-content>

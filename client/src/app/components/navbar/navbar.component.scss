@@ -1,0 +1,9 @@
+#navlist{
+    list-style: none;
+    display: flex;
+    flex-direction: row;
+    li {
+        margin-left: 1rem;
+        margin-right: 1rem;
+    }
+}
