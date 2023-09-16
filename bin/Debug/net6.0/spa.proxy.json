@@ -1,6 +1,6 @@
 {
 "SpaProxyServer": {
-"ServerUrl": "http://localhost:4410",
+"ServerUrl": "https://localhost:4411",
 "LaunchCommand": "npm start",
 "WorkingDirectory": "C:\\programProjects\\sharpAngleTemplate\\client\\",
 "MaxTimeoutInSeconds": "120"

@@ -4,25 +4,43 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { NavbarComponent } from './components/navbar/navbar.component';
 import { MaterialModule } from './material.module';
-import { MatNavComponent } from './components/navbar/matnav/matnav.component';
 import { NavbarService } from './services/navbar.service';
 import { NavigationService } from './services/navigation.service';
 import { ThemeService } from './services/theme.service';
+import { CommonModule } from '@angular/common';
+import { RouterModule, Routes } from '@angular/router';
+import { BodyBaseComponent } from './tools/components/body-base/body-base.component';
+import { MatNavComponent } from './tools/components/matnav/matnav.component';
+import { HomeComponent } from './components/home/home.component';
+import { NavbarComponent } from './components/navbar/navbar.component';
+import { HttpClientModule } from '@angular/common/http';
+import { DBService } from './services/database.service';
+
+const routes: Routes = [
+  {
+    path:'',
+    component: HomeComponent
+  } 
+];
 @NgModule({
   declarations: [
     AppComponent,
     NavbarComponent,
-    MatNavComponent
+    MatNavComponent,
+    HomeComponent,
+    BodyBaseComponent
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule,
+    RouterModule,
+    RouterModule.forRoot(routes),
     NoopAnimationsModule,
-    MaterialModule
+    MaterialModule,
+    CommonModule,
+    HttpClientModule
   ],
-  providers: [NavbarService, NavigationService,ThemeService],
+  providers: [NavbarService, NavigationService,ThemeService,DBService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

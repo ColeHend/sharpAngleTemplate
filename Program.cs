@@ -1,6 +1,9 @@
 using Microsoft.Extensions.FileProviders;
 using Microsoft.AspNetCore.SpaServices;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
+using sharpAngleTemplate.Controllers;
+using Microsoft.AspNetCore.Mvc.ApplicationParts;
+using sharpAngleTemplate.tools;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +22,8 @@ builder.Services.AddCors(options =>
                                               "https://localhost:4411").AllowAnyHeader().AllowAnyMethod();
                       });
 });
+builder.Services.AddSingleton<IDbJsonService, DbJsonService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -27,21 +32,21 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-app.UseSpa(spa =>
-{
-    spa.Options.SourcePath = "client"; 
-    
-    if (app.Environment.IsDevelopment())
-    {
-        // spa.UseProxyToSpaDevelopmentServer('http://localhost:PORT');
-        spa.UseAngularCliServer("ng serve");
-    }
-});
 
+app.UseRouting();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseCors(localOrigins);
 app.UseAuthorization();
 app.MapControllers();
 app.MapFallbackToFile("index.html");
+app.UseSpa(spa =>
+{
+    spa.Options.SourcePath = "client"; 
+    
+    if (app.Environment.IsDevelopment())
+    {
+        spa.UseAngularCliServer("ng serve");
+    }
+});
 app.Run();

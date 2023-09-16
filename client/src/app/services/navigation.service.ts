@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { NavbarService } from './navbar.service';
 import { HomeComponent } from '../components/home/home.component';
-import { EmptyComponent } from '../components/empty/empty.component';
+import { EmptyComponent } from '../tools/components/empty/empty.component';
 import { ThemeService } from './theme.service';
 import { BehaviorSubject } from 'rxjs';
 @Injectable({providedIn:'root'})
@@ -43,8 +43,8 @@ export class NavigationService {
         this.navbarService.showText();
         this.navbarService.setSecondText('Hello Second Bar')
         // Tabs after the Text
-        // this.navbarService.showTabs()
-        this.navbarService.setTabs({name:"Tab 1",component: HomeComponent}, {name:"Tab 2",component: EmptyComponent})
+        this.navbarService.showTabs()
+        this.navbarService.setTabs({name:"Tab 1",component: EmptyComponent}, {name:"Tab 2",component: EmptyComponent})
         // Icons on the right of the bar
         this.navbarService.setSecondIcons({iconName:"home",callback:()=>{},tooltip:'Home Screen'})
     }
