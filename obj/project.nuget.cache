@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "eZWV+6+uf+/aPVkZaSWB3KynBGRmainfjMrneQ/LPW/gYlf75PVXh+r0i1Rm1gPZ1RrftQ+N7oLCUvEzcbOgNg==",
+  "dgSpecHash": "b9Cgg8Kn0g11jnifmpU6/a7q/7OWMg0+rmnIPiwJskB8m0lYQwKC7/EKEUFqhz4w8ZXiR4H+Ur1vhuX7VYROZg==",
   "success": true,
-  "projectFilePath": "c:\\programProjects\\sharpAngleTemplate\\SharpAnglesTemplate.csproj",
+  "projectFilePath": "C:\\programProjects\\sharpAngleTemplate\\SharpAnglesTemplate.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\darkg\\.nuget\\packages\\azure.core\\1.25.0\\azure.core.1.25.0.nupkg.sha512",
     "C:\\Users\\darkg\\.nuget\\packages\\azure.identity\\1.7.0\\azure.identity.1.7.0.nupkg.sha512",

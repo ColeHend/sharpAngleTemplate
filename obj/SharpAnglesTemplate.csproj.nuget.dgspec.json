@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "c:\\programProjects\\sharpAngleTemplate\\SharpAnglesTemplate.csproj": {}
+    "C:\\programProjects\\sharpAngleTemplate\\SharpAnglesTemplate.csproj": {}
   },
   "projects": {
-    "c:\\programProjects\\sharpAngleTemplate\\SharpAnglesTemplate.csproj": {
+    "C:\\programProjects\\sharpAngleTemplate\\SharpAnglesTemplate.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "c:\\programProjects\\sharpAngleTemplate\\SharpAnglesTemplate.csproj",
+        "projectUniqueName": "C:\\programProjects\\sharpAngleTemplate\\SharpAnglesTemplate.csproj",
         "projectName": "SharpAnglesTemplate",
-        "projectPath": "c:\\programProjects\\sharpAngleTemplate\\SharpAnglesTemplate.csproj",
+        "projectPath": "C:\\programProjects\\sharpAngleTemplate\\SharpAnglesTemplate.csproj",
         "packagesPath": "C:\\Users\\darkg\\.nuget\\packages\\",
-        "outputPath": "c:\\programProjects\\sharpAngleTemplate\\obj\\",
+        "outputPath": "C:\\programProjects\\sharpAngleTemplate\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
