@@ -6,12 +6,15 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using sharpAngleTemplate.data;
+using sharpAngleTemplate.models;
+using sharpAngleTemplate.models.DTO;
+using sharpAngleTemplate.models.entities;
 using sharpAngleTemplate.tools;
 
 namespace sharpAngleTemplate.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class Pokemon : Controller
     {
         private readonly SharpAngleContext dbContext;
@@ -26,6 +29,8 @@ namespace sharpAngleTemplate.Controllers
         [HttpGet("{id:int}")]
         public IActionResult Get(int id)
         {
+            Console.WriteLine($"{DateTime.Now}) GetPokeReq:", id);
+
             var pokemon = dbContext.Pokemon.ToList();
             var onePoke = pokemon.Find(poke=>poke.Id==id);
 
@@ -41,35 +46,85 @@ namespace sharpAngleTemplate.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
+            Console.WriteLine($"{DateTime.Now}) GetAllPokeReq:");
+
             var pokemon = dbContext.Pokemon.ToList();
 
             return Ok(PokeMapper.MapMultiPokemon(pokemon));
         }
 
         [HttpPost]
-        public void Add()
+        public IActionResult Add([FromBody] PokemonAddReq pokemon)
         {
-            var pokemon = dbContext.Pokemon;
+            Console.WriteLine($"{DateTime.Now}) AddPokeReq:",pokemon);
+            var pokemonDb = dbContext.Pokemon;
+            if (pokemon.pokeName == null)
+            {
+                return BadRequest();
+            }
+            pokemonDb.Add(new models.entities.Pokemon(){
+                PokeName=pokemon.pokeName
+            });
+
+            dbContext.SaveChanges();
+
+            return Ok(PokeMapper.MapPokemon(pokemonDb.ToList().Find(poke=>poke.PokeName==pokemon.pokeName)));
 
         }
         [HttpPost("Multi")]
-        public void MultiAdd()
+        public IActionResult MultiAdd([FromBody] List<PokemonAddReq> pokemon)
         {
-            var pokemon = dbContext.Pokemon;
+            Console.WriteLine($"{DateTime.Now}) AddMultiPokeReq:", pokemon);
+            var pokemonDb = dbContext.Pokemon;
+            if (pokemon.Find(poke=>poke.pokeName==null) != null)
+            {
+                return BadRequest();
+            }
+            foreach (var mon in pokemon)
+            {
+                pokemonDb.Add(new models.entities.Pokemon(){
+                    PokeName = mon.pokeName
+                });
+            }
 
+            dbContext.SaveChanges();
+
+            return Ok(PokeMapper.MapMultiPokemon(pokemonDb.ToList()));
         }
 
         [HttpPut]
-        public void Update()
+        public IActionResult Update([FromBody] PokemonUpdateReq pokemon)
         {
-            var pokemon = dbContext.Pokemon;
+            Console.WriteLine($"{DateTime.Now}) UpdatePokeReq:", pokemon);
+            
+            var pokemonDb = dbContext.Pokemon;
+            var pokeFromDb = pokemonDb.FirstOrDefault(p=>p.Id==pokemon.id);
+            if (pokeFromDb == null)
+            {
+                return NotFound();
+            }
 
-        }
-        [HttpPut("Multi")]
-        public void MultiUpdate()
-        {
-            var pokemon = dbContext.Pokemon;
+            if (pokemon.pokeName != null)
+            {
+                pokeFromDb.PokeName = pokemon.pokeName;
+            }
+            dbContext.SaveChanges();
 
+            return Ok(PokeMapper.MapPokemon(pokeFromDb));
         }
+
+            [HttpDelete]
+            public IActionResult Delete([FromBody] int id){
+                var pokemonDb = dbContext.Pokemon;
+                var pokemon = pokemonDb.FirstOrDefault(poke=>poke.Id==id);
+                if (pokemon == null)
+                {
+                    return NotFound();
+                }
+                pokemonDb.Remove(pokemon);
+
+                return Ok();
+            }
     }
+
 }
