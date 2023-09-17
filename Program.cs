@@ -8,7 +8,6 @@ using sharpAngleTemplate.tools;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-var localOrigins = "_myAllowLocalOrigins";
 builder.Services.AddControllers();
 
 builder.Services.AddSingleton<IDbJsonService, DbJsonService>();
@@ -16,15 +15,6 @@ builder.Services.AddSingleton<IDbJsonService, DbJsonService>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
-// builder.Services.AddCors(options =>
-// {
-//     options.AddPolicy(name: localOrigins,
-//                       builder =>
-//                       {
-//                           builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin().AllowAnyOrigin(); 
-//                       });
-// });
 
 var app = builder.Build();
 
@@ -37,7 +27,6 @@ if (app.Environment.IsDevelopment())
 
 // app.UseHttpsRedirection();
 app.UseStaticFiles("/client");
-// app.UseCors(localOrigins);
 app.UseRouting();
 app.UseAuthorization();
 
@@ -49,8 +38,8 @@ app.UseEndpoints(
 
 app.UseSpa(spa =>
 {
-    spa.Options.SourcePath = "client"; 
-    
+    spa.Options.SourcePath = "client";
+
     if (app.Environment.IsDevelopment())
     {
         spa.UseAngularCliServer("ng serve");
