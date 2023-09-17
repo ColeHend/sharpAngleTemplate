@@ -68,8 +68,7 @@
               "browserTarget": "SeaTrack:build:production"
             },
             "development": {
-              "browserTarget": "SeaTrack:build:development",
-              "proxyConfig": "aspnetcore-https.js"
+              "browserTarget": "SeaTrack:build:development"
             }
           },
           "defaultConfiguration": "development"

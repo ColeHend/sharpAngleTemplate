@@ -7,8 +7,8 @@ using sharpAngleTemplate.tools;
 namespace sharpAngleTemplate.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
-    public class JsonDbController : Controller
+    [Route("api/[controller]/[action]")]
+    public class JsonDbController : ControllerBase
     {
         private IDbJsonService _db;
         public JsonDbController(IDbJsonService DbJsonService)
@@ -16,40 +16,41 @@ namespace sharpAngleTemplate.Controllers
             _db = DbJsonService;
         }
         // ---------------- Endpoints ------------------
-        [HttpPost("GetCollection")]
+        [HttpPost]
         public IActionResult GetCollection([FromBody] AddMassDataReq request){
             Console.WriteLine("GetCollection: ",request);
-            var collectionName = request.collectionName;
-            var collection = _db.GetCollectionFromDB(collectionName);
+            var CollectionName = request.CollectionName;
+            var collection = _db.GetCollectionFromDB(CollectionName);
             if (collection != null)
             {
-                return new ContentResult() { Content = JsonConvert.SerializeObject(collection), StatusCode = 200 };
+                return Ok(JsonConvert.SerializeObject(collection));
             } 
-            return new ContentResult() { StatusCode = 204 };
+            return BadRequest();
 
         }
 
-        [HttpPost("CreateCollection")]
+        [HttpPost]
         public IActionResult CreateCollection([FromBody] CreateCollectionReq request)
         {
             Console.WriteLine("CreateCollection",request);
 
-            var collectionName = request.collectionName;
-            var data = request.data;
+            var CollectionName = request.CollectionName;
+            var Data = request.Data;
 
-            int index = _db.GetCollectionIndex(collectionName);
-            var collection = _db.GetCollectionFromDB(collectionName);
+            int index = _db.GetCollectionIndex(CollectionName);
+            var collection = _db.GetCollectionFromDB(CollectionName);
 
-            if (collection != null && data != null && index > -1)
+            if (collection != null && Data != null && index > -1)
             {
-                _db.ReplaceCollectionAllData(collectionName, data);
+                _db.ReplaceCollectionAllData(CollectionName, Data);
             } 
-            else if (collectionName != null && data != null && index == -1)
+            else if (CollectionName != null && Data != null && index == -1)
             {
-                _db.CreateCollectionInDB(collectionName, data);
-                collection = _db.GetCollectionFromDB(collectionName);
-            }
+                _db.CreateCollectionInDB(CollectionName, Data);
+                collection = _db.GetCollectionFromDB(CollectionName);
 
+            }
+            _db.SyncDatabaseJSON();
             if (collection != null)
             {
                 return new ContentResult() {Content = JsonConvert.SerializeObject(collection), StatusCode = 200 };
@@ -60,35 +61,35 @@ namespace sharpAngleTemplate.Controllers
             }
         }
 
-        [HttpPost("AddData")]
+        [HttpPost]
         public IActionResult AddData([FromBody] AddDataReq request)
         {
             Console.WriteLine("AddData",request);
-            var collectionName = request.collectionName;
-            var data = request.data;
+            var CollectionName = request.CollectionName;
+            var Data = request.Data;
 
-            var index = _db.GetCollectionIndex(collectionName);
-            if (index >= 0 && data != null)
+            var index = _db.GetCollectionIndex(CollectionName);
+            if (index >= 0 && Data != null)
             {
-                _db.AddToDataCollection(collectionName, data);
+                _db.AddToDataCollection(CollectionName, Data);
             }
             _db.SyncDatabaseJSON();
             return new ContentResult(){StatusCode=200};
         }
 
-        [HttpPost("AddMassData")]
+        [HttpPost]
         public IActionResult AddMassData([FromBody] AddMassDataReq request)
         {
             Console.WriteLine("AddMassData",request);
-            var collectionName = request.collectionName;
-            var data = request.data;
+            var CollectionName = request.CollectionName;
+            var Data = request.Data;
 
-            var index = _db.GetCollectionIndex(collectionName);
-            if (index >= 0 && data != null)
+            var index = _db.GetCollectionIndex(CollectionName);
+            if (index >= 0 && Data != null)
             {
-                foreach (var item in data)
+                foreach (var item in Data)
                 {
-                    _db.AddToDataCollection(collectionName, item);
+                    _db.AddToDataCollection(CollectionName, item);
                 }
             }
             _db.SyncDatabaseJSON();
@@ -98,21 +99,21 @@ namespace sharpAngleTemplate.Controllers
 
     public class GetCollectionReq 
     {
-        public string collectionName {get;set;}
+        public string CollectionName {get;set;}
     }
     public class CreateCollectionReq
     {
-        public string collectionName {get;set;}
-        public string[] data {get;set;}
+        public string CollectionName {get;set;}
+        public string[] Data {get;set;}
     }
     public class AddDataReq
     {
-        public string collectionName {get;set;}
-        public string data {get;set;}
+        public string CollectionName {get;set;}
+        public string Data {get;set;}
     }
     public class AddMassDataReq
     {
-        public string collectionName {get;set;}
-        public string[] data {get;set;}
+        public string CollectionName {get;set;}
+        public string[] Data {get;set;}
     }
 }

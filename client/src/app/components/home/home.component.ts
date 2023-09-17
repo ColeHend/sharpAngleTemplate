@@ -17,10 +17,5 @@ export class HomeComponent implements OnInit{
     this.primaryTheme = this.themeService.getPrimaryTheme();
     this.accentTheme = this.themeService.getAccentTheme();
     this.hoverTheme = this.themeService.getHoverTheme();
-    let collection = this.dbService.createCollection("test",['test 1', 'test 2'])
-    collection.subscribe((value=>{
-      console.log('collection ', value);
-    }))
-    
   }
 }
