@@ -1,8 +1,0 @@
-{
-"SpaProxyServer": {
-"ServerUrl": "",
-"LaunchCommand": "",
-"WorkingDirectory": "C:\\programProjects\\sharpAngleTemplate\\client\\",
-"MaxTimeoutInSeconds": "120"
-}
-}
