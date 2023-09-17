@@ -1,8 +1,8 @@
 <app-bodyBase>
     <div>
         <ul >
-            <li>Welcome</li>
-            <li>To My Site</li>
+            <li>V hello {{testCollect?.Name}} V</li>
+            <li *ngFor="let item of testCollect?.Data">Welcome {{item}}</li>
         </ul>
     </div>
 </app-bodyBase>
