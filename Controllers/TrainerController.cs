@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using sharpAngleTemplate.data;
+using sharpAngleTemplate.models;
 using sharpAngleTemplate.tools;
 
 namespace sharpAngleTemplate.Controllers
@@ -33,6 +34,7 @@ namespace sharpAngleTemplate.Controllers
 
             return Ok(PokeMapper.MapTrainer(trainer));
         }
+        
         [HttpGet]
         public IActionResult Get()
         {
@@ -42,39 +44,71 @@ namespace sharpAngleTemplate.Controllers
         }
 
         [HttpPost]
-        public IActionResult Add()
+        public IActionResult Add([FromBody] TrainerAddReq trainer)
         {
             var trainerDb = dbContext.Trainers;
+            var train = new models.entities.Trainer(){
+                Name=trainer.Name,
+                UserId=trainer.UserId,
+                Pokemon=trainer.Pokemon
+            };
+            trainerDb.Add(train);
+            dbContext.SaveChanges();
             
-            return Ok();
+            return Ok(PokeMapper.MapTrainer(trainerDb.Find(train)));
         }
 
         [HttpPost("Multi")]
-        public IActionResult AddMulti()
+        public IActionResult AddMulti([FromBody] List<TrainerAddReq> trainers)
         {
             var trainerDb = dbContext.Trainers;
+            foreach (var trainer in trainers)
+            {
+                var train = new models.entities.Trainer(){
+                Name=trainer.Name,
+                UserId=trainer.UserId,
+                Pokemon=trainer.Pokemon
+            };
+                trainerDb.Add(train);
+            }
+            var theTrainers = trainerDb.ToList().FindAll(t=>t.UserId==trainers[0].UserId);
 
-            return Ok();
+            return Ok(PokeMapper.MapMultiTrainer(theTrainers));
         }
 
         [HttpPut]
-        public IActionResult Update()
+        public IActionResult Update([FromBody] TrainerUpdateReq trainer)
         {
             var trainerDb = dbContext.Trainers;
             
-            return Ok();
+            var trainerDomain = trainerDb.FirstOrDefault(t=>t.Id==trainer.Id);
+            if (trainerDomain == null)
+            {
+                return NotFound();
+            }
+            if (trainer.Name != null)
+            {
+                trainerDomain.Name = trainer.Name;
+            }
+            if (trainer.Pokemon != null)
+            {
+                trainerDomain.Pokemon = trainer.Pokemon;
+            }
+            dbContext.SaveChanges();
+
+            return Ok(PokeMapper.MapTrainer(trainerDomain));
         }
-        [HttpPut("Multi")]
-        public IActionResult UpdateMulti()
-        {
-            var trainerDb = dbContext.Trainers;
-            
-            return Ok();
-        }
+
         [HttpDelete]
         public IActionResult Delete([FromBody] int id)
         {
             var trainerDb = dbContext.Trainers;
+            var trainerDomain = trainerDb.FirstOrDefault(t=>t.Id==id);
+            if (trainerDomain == null)
+            {
+                return NotFound();
+            }
+            trainerDb.Remove(trainerDomain);
             
             return Ok();
         }
