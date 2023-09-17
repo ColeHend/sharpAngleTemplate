@@ -19,7 +19,7 @@ namespace sharpAngleTemplate.tools
         }
         // ------- DatabaseCollection && DB JSON Interactions ---------
         public DBCollection GetDB() {
-            var path = GetExecutingDirectory().Parent.Parent.Parent.ToString();
+            var path = GetExecutingDirectory().ToString();
             using (StreamReader r = new StreamReader($"{path}/json/db.json"))
             {
                 string json = r.ReadToEnd();
@@ -36,10 +36,10 @@ namespace sharpAngleTemplate.tools
         public static DirectoryInfo GetExecutingDirectory()
         {
             var location = new Uri(Assembly.GetEntryAssembly().GetName().CodeBase);
-            return new FileInfo(location.AbsolutePath).Directory;
+            return new FileInfo(location.AbsolutePath).Directory.Parent.Parent.Parent;
         }
         public void SyncDatabaseJSON(){
-            var path = GetExecutingDirectory().Parent.Parent.Parent.ToString();
+            var path = GetExecutingDirectory().ToString();
             string jsonSTR = JsonConvert.SerializeObject(DatabaseCollection);
             using (StreamWriter r = new StreamWriter($"{path}/json/db.json", false))
             {
