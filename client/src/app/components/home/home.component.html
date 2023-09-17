@@ -1,8 +1,25 @@
 <app-bodyBase>
     <div>
-        <ul >
-            <li>V hello {{(testCollect| async)?.Name}} V</li>
-            <li *ngFor="let item of (testCollect | async)?.Data">Welcome {{item}}</li>
-        </ul>
+        <h1>DB Testing</h1>
+        <div>
+            <h3>JSON Collection Test</h3>
+            <ul >
+                <li>V Name: {{(testCollect| async)?.Name}} V</li>
+                <li *ngFor="let item of (testCollect | async)?.Data;index as i">Item {{i}}: {{item}}</li>
+            </ul>
+        </div>
+    </div>
+    <div>
+        <h1>Security Testing</h1>
+        <div>
+            <h3>Login</h3>
+            <div><input type="text" name="usernameL" id="usernameL" placeholder="username"></div>
+            <div><input type="text" name="passwordL" id="passwordL" placeholder="password"></div>
+        </div>
+        <div>
+            <h3>Register</h3>
+            <div><input type="text" name="usernameR" id="usernameR" placeholder="username"></div>
+            <div><input type="text" name="passwordR" id="passwordR" placeholder="password"></div>
+        </div>
     </div>
 </app-bodyBase>
