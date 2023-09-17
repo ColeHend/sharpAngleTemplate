@@ -13,6 +13,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 
 builder.Services.AddSingleton<IDbJsonService, DbJsonService>();
+builder.Services.AddSingleton<IPokemonMapper,PokemonMapper>();
+builder.Services.AddSingleton<IUserMapper,UserMapper>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
