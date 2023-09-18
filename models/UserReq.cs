@@ -18,8 +18,8 @@ namespace sharpAngleTemplate.models
     }
     public class UserGetReq
     {
-        public int Id { get; set; }
-        public string Username { get; set; }
+        public int? Id { get; set; }
+        public string? Username { get; set; }
     }
     public class UserUpdateReq
     {
@@ -27,5 +27,13 @@ namespace sharpAngleTemplate.models
         public string Username { get; set; }
         public string Password { get; set; }
         public string MoreData { get; set; }
+    }
+    public class DeleteUserReq
+    {
+        public int Id { get; set; }
+        public string Username { get; set; }
+
+        public string Password { get; set; }
+
     }
 }
