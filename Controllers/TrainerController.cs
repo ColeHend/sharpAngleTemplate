@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using sharpAngleTemplate.CustomActionFilters;
 using sharpAngleTemplate.data;
 using sharpAngleTemplate.models;
 using sharpAngleTemplate.tools;
@@ -23,10 +25,10 @@ namespace sharpAngleTemplate.Controllers
         }
 
         [HttpGet("{id:int}")]
-        public IActionResult Get([FromRoute] int id)
+        public async Task<IActionResult> Get([FromRoute] int id)
         {
             var trainerDb = dbContext.Trainers;
-            var trainer = trainerDb.FirstOrDefault(t=>t.Id==id);
+            var trainer = await trainerDb.FirstOrDefaultAsync(t=>t.Id==id);
             if (trainer == null)
             {
                 return NotFound();
@@ -36,14 +38,15 @@ namespace sharpAngleTemplate.Controllers
         }
         
         [HttpGet]
-        public IActionResult Get()
+        public async Task<IActionResult> Get()
         {
             var trainerDb = dbContext.Trainers;
-
-            return Ok(PokeMapper.MapMultiTrainer(trainerDb.ToList()));
+            var trainerDex = await trainerDb.ToListAsync();
+            return Ok(PokeMapper.MapMultiTrainer(trainerDex));
         }
 
         [HttpPost]
+        [ValidUnProtected]
         public IActionResult Add([FromBody] TrainerAddReq trainer)
         {
             var trainerDb = dbContext.Trainers;
@@ -59,6 +62,7 @@ namespace sharpAngleTemplate.Controllers
         }
 
         [HttpPost("Multi")]
+        [ValidUnProtected]
         public IActionResult AddMulti([FromBody] List<TrainerAddReq> trainers)
         {
             var trainerDb = dbContext.Trainers;
@@ -77,6 +81,7 @@ namespace sharpAngleTemplate.Controllers
         }
 
         [HttpPut]
+        [ValidUnProtected]
         public IActionResult Update([FromBody] TrainerUpdateReq trainer)
         {
             var trainerDb = dbContext.Trainers;
@@ -100,6 +105,7 @@ namespace sharpAngleTemplate.Controllers
         }
 
         [HttpDelete]
+        [ValidUnProtected]
         public IActionResult Delete([FromBody] int id)
         {
             var trainerDb = dbContext.Trainers;

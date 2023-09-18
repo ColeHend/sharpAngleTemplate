@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using sharpAngleTemplate.CustomActionFilters;
 using sharpAngleTemplate.data;
 using sharpAngleTemplate.models;
 using sharpAngleTemplate.tools;
@@ -24,6 +25,7 @@ namespace sharpAngleTemplate.Controllers
         }
 
         [HttpPost]
+        [ValidUnProtected]
         public IActionResult Register([FromBody] UserRegisterReq user)
         {
             var userDb = dbContext.Users;
@@ -47,6 +49,7 @@ namespace sharpAngleTemplate.Controllers
         }
 
         [HttpPost]
+        [ValidUnProtected]
         public IActionResult Login([FromBody] UserLoginReq user)
         {
             var userDb = dbContext.Users;
@@ -66,6 +69,7 @@ namespace sharpAngleTemplate.Controllers
         }
 
         [HttpPost]
+        [ValidUnProtected]
         public IActionResult Get([FromBody] UserGetReq user)
         {
             var userDb = dbContext.Users;
@@ -84,6 +88,7 @@ namespace sharpAngleTemplate.Controllers
         }
 
         [HttpPut]
+        [ValidUnProtected]
         public IActionResult Update([FromBody] UserUpdateReq user)
         {
             var userDb = dbContext.Users;
@@ -113,6 +118,7 @@ namespace sharpAngleTemplate.Controllers
         }
 
         [HttpDelete]
+        [ValidUnProtected]
         public IActionResult Delete([FromBody] DeleteUserReq user)
         {
             var userDb = dbContext.Users;
