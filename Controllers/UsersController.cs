@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using sharpAngleTemplate.CustomActionFilters;
 using sharpAngleTemplate.data;
 using sharpAngleTemplate.models;
+using sharpAngleTemplate.Repositories;
 using sharpAngleTemplate.tools;
 
 namespace sharpAngleTemplate.Controllers
@@ -17,11 +18,13 @@ namespace sharpAngleTemplate.Controllers
     public class UsersController : Controller
     {
         private readonly SharpAngleContext dbContext;
-        private IUserMapper UserMapper;
-        public UsersController(SharpAngleContext dbContext, IUserMapper UserMapper)
+        private readonly IUserMapper UserMapper;
+        private readonly ITokenRepository TokenRepo;
+        public UsersController(SharpAngleContext dbContext, IUserMapper UserMapper, ITokenRepository tokenRepo)
         {
             this.dbContext = dbContext;
             this.UserMapper = UserMapper;
+            this.TokenRepo = tokenRepo;
         }
 
         [HttpPost]
@@ -65,7 +68,7 @@ namespace sharpAngleTemplate.Controllers
                 return Ok(UserMapper.MapUser(userDomain));
             }
             // Password is wrong
-            return BadRequest("Incorrect Password");
+            return BadRequest("Incorrect Username or Password");
         }
 
         [HttpPost]

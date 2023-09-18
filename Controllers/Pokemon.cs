@@ -11,6 +11,7 @@ using sharpAngleTemplate.data;
 using sharpAngleTemplate.models;
 using sharpAngleTemplate.models.DTO;
 using sharpAngleTemplate.models.entities;
+using sharpAngleTemplate.Repositories;
 using sharpAngleTemplate.tools;
 
 namespace sharpAngleTemplate.Controllers
@@ -19,22 +20,20 @@ namespace sharpAngleTemplate.Controllers
     [Route("api/[controller]")]
     public class Pokemon : Controller
     {
-        private readonly SharpAngleContext dbContext;
         private IPokemonMapper PokeMapper;
+        private ISQLPokemonRepository PokeRepo;
 
-        public Pokemon(SharpAngleContext dbContext, IPokemonMapper PokeMapper)
+        public Pokemon(IPokemonMapper PokeMapper, ISQLPokemonRepository pokeRepo)
         {
-            this.dbContext = dbContext;
             this.PokeMapper = PokeMapper;
+            PokeRepo = pokeRepo;
         }
 
         [HttpGet("{id:int}")]
         public async Task<IActionResult> Get(int id)
         {
             Console.WriteLine($"{DateTime.Now}) GetPokeReq:", id);
-
-            var pokemon = await dbContext.Pokemon.ToListAsync();
-            var onePoke = pokemon.Find(poke => poke.Id == id);
+            var onePoke = await PokeRepo.Get(id);
 
             if (onePoke != null)
             {
@@ -47,34 +46,35 @@ namespace sharpAngleTemplate.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] string? filterOn, [FromQuery] string? filterQuery)
         {
+            var pokemon = await PokeRepo.Get();
+
+            if (string.IsNullOrWhiteSpace(filterOn) == false && string.IsNullOrWhiteSpace(filterQuery) == false)
+            {
+                if (filterOn.Equals("PokeName", StringComparison.OrdinalIgnoreCase))
+                {
+                    var pokemon2 = pokemon.Where(x=> x.PokeName.Contains(filterQuery));
+                }
+            }
             Console.WriteLine($"{DateTime.Now}) GetAllPokeReq:");
 
-            var pokemon = await dbContext.Pokemon.ToListAsync();
 
             return Ok(PokeMapper.MapMultiPokemon(pokemon));
         }
 
         [HttpPost]
         [ValidUnProtected]
-        public async Task<IActionResult> Add([FromBody] PokemonAddReq pokemon)
-        {
-            Console.WriteLine($"{DateTime.Now}) AddPokeReq:", pokemon);
-            var pokemonDb = dbContext.Pokemon;
-            if (pokemon.pokeName == null)
+        public async Task<IActionResult> Add([FromBody] PokemonAddReq poke)
+        {  Console.WriteLine($"{DateTime.Now}) AddPokeReq:", poke);
+            var pokemon = await PokeRepo.Add(poke);
+            
+            if (pokemon == null)
             {
                 return BadRequest();
             }
-            pokemonDb.Add(new models.entities.Pokemon()
-            {
-                PokeName = pokemon.pokeName
-            });
 
-            await dbContext.SaveChangesAsync();
-            var pokedex = await pokemonDb.ToListAsync();
-
-            return Ok(PokeMapper.MapPokemon(pokedex.Find(poke => poke.PokeName == pokemon.pokeName)));
+            return Ok(PokeMapper.MapPokemon(pokemon));
 
         }
 
@@ -83,23 +83,16 @@ namespace sharpAngleTemplate.Controllers
         public async Task<IActionResult> MultiAdd([FromBody] List<PokemonAddReq> pokemon)
         {
             Console.WriteLine($"{DateTime.Now}) AddMultiPokeReq:", pokemon);
-            var pokemonDb = dbContext.Pokemon;
             if (pokemon.Find(poke => poke.pokeName == null) != null)
             {
                 return BadRequest();
             }
             foreach (var mon in pokemon)
             {
-                pokemonDb.Add(new models.entities.Pokemon()
-                {
-                    PokeName = mon.pokeName
-                });
+                await PokeRepo.Add(mon);
             }
 
-            await dbContext.SaveChangesAsync();
-            var pokedex = await pokemonDb.ToListAsync();
-
-            return Ok(PokeMapper.MapMultiPokemon(pokedex));
+            return Ok(await PokeRepo.Get());
         }
 
         [HttpPut]
@@ -107,35 +100,26 @@ namespace sharpAngleTemplate.Controllers
         public async Task<IActionResult> Update([FromBody] PokemonUpdateReq pokemon)
         {
             Console.WriteLine($"{DateTime.Now}) UpdatePokeReq:", pokemon);
-
-            var pokemonDb = dbContext.Pokemon;
-            var pokeFromDb = await pokemonDb.FirstOrDefaultAsync(p => p.Id == pokemon.id);
-            if (pokeFromDb == null)
+            var pokeFromDb = await PokeRepo.Update(pokemon);
+            if (pokeFromDb != null)
+            {
+                return Ok(pokeFromDb);  
+            } else
             {
                 return NotFound();
             }
-
-            if (pokemon.pokeName != null)
-            {
-                pokeFromDb.PokeName = pokemon.pokeName;
-            }
-            dbContext.SaveChanges();
-
-            return Ok(PokeMapper.MapPokemon(pokeFromDb));
         }
 
         [HttpDelete]
         [ValidUnProtected]
         public async Task<IActionResult> Delete([FromBody] int id)
         {
-            var pokemonDb = dbContext.Pokemon;
-            var pokemon = await pokemonDb.FirstOrDefaultAsync(poke => poke.Id == id);
+            var pokemon = await PokeRepo.Remove(id);
 
             if (pokemon == null)
             {
                 return NotFound();
             }
-            pokemonDb.Remove(pokemon);
 
             return Ok();
         }
