@@ -1,8 +1,9 @@
 using Microsoft.AspNetCore.Identity;
+using sharpAngleTemplate.models.entities;
 
 namespace sharpAngleTemplate.Repositories
 {
     public interface ITokenRepository {
-        string CreateJWTToken(IdentityUser user, List<string> roles);
+        string CreateJWTToken(User user);
     }
 }

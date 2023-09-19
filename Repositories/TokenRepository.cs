@@ -3,6 +3,7 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
+using sharpAngleTemplate.models.entities;
 
 namespace sharpAngleTemplate.Repositories
 {
@@ -14,27 +15,25 @@ namespace sharpAngleTemplate.Repositories
             this.configuration = configuration;
         }
 
-        public string CreateJWTToken(IdentityUser user, List<string> roles)
+        public string CreateJWTToken(User user)
         {
 
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Email, user.Email)
+                new Claim(ClaimTypes.Name, user.Username)
             };
 
-            foreach (var role in roles)
+            foreach (var role in user.roles)
             {
                 claims.Add(new Claim(ClaimTypes.Role, role));
             }
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]));
-            var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
 
 
             var token = new JwtSecurityToken(
-                configuration["Jwt:Issuer"],
-                configuration["Jwt:Audience"],
-                claims,
+                claims: claims,
                 expires: DateTime.Now.AddDays(1),
                 signingCredentials: credentials
             );

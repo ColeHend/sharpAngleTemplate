@@ -11,10 +11,11 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.AspNetCore.Identity;
+using sharpAngleTemplate.models.entities;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+//------------- Add services to the container.-------------
 builder.Services.AddControllers();
 
 builder.Services.AddSingleton<IPokemonMapper,PokemonMapper>();
@@ -24,11 +25,17 @@ builder.Services.AddTransient<IDbJsonService, DbJsonService>();
 builder.Services.AddTransient<ISQLPokemonRepository, SQLPokemonRepository>();
 builder.Services.AddTransient<ITokenRepository, TokenRepository>();
 
-builder.Services.AddIdentityCore<IdentityUser>()
-    .AddRoles<IdentityRole>()
-    .AddTokenProvider<DataProtectorTokenProvider<IdentityUser>>("AuthProv")
-    .AddEntityFrameworkStores<SharpAngleContext>()
-    .AddDefaultTokenProviders();
+// ----- Add Database Stuff ----
+
+var connString = builder.Configuration.GetConnectionString("localDefault");
+builder.Services.AddDbContext<SharpAngleContext>(options=>options.UseSqlServer(connString));
+// builder.Services.AddDbContext<SessionContext>(options=>options.UseSqlServer(connString));
+
+// builder.Services.AddIdentityCore<User>()
+//     .AddRoles<IdentityRole>()
+//     .AddTokenProvider<DataProtectorTokenProvider<User>>("AuthProv")
+//     .AddEntityFrameworkStores<SharpAngleContext>()
+//     .AddDefaultTokenProviders();
 
 builder.Services.Configure<IdentityOptions>(options =>
 {
@@ -55,8 +62,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-var connString = builder.Configuration.GetConnectionString("localDefault");
-builder.Services.AddDbContext<SharpAngleContext>(options=>options.UseSqlServer(connString));
+
 
 var app = builder.Build();
 

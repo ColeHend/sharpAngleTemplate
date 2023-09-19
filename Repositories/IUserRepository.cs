@@ -11,6 +11,8 @@ namespace sharpAngleTemplate.Repositories
 
         Task<User> GetRoles(string username);
 
-        Task<bool> CheckPassword(UserDto user, IdentityRole Role);
+        void CreatePasswordHash(string password, out byte[] passHash, out byte[] passSalt);
+
+        bool VerifyPasswordHash(string password, byte[] passHash, byte[] passSalt);
     }
 }

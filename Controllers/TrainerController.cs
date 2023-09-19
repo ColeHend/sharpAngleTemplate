@@ -46,7 +46,7 @@ namespace sharpAngleTemplate.Controllers
         }
 
         [HttpPost]
-        [ValidUnProtected]
+        [Valid]
         public IActionResult Add([FromBody] TrainerAddReq trainer)
         {
             var trainerDb = dbContext.Trainers;
@@ -62,7 +62,7 @@ namespace sharpAngleTemplate.Controllers
         }
 
         [HttpPost("Multi")]
-        [ValidUnProtected]
+        [Valid]
         public IActionResult AddMulti([FromBody] List<TrainerAddReq> trainers)
         {
             var trainerDb = dbContext.Trainers;
@@ -81,7 +81,7 @@ namespace sharpAngleTemplate.Controllers
         }
 
         [HttpPut]
-        [ValidUnProtected]
+        [Valid]
         public IActionResult Update([FromBody] TrainerUpdateReq trainer)
         {
             var trainerDb = dbContext.Trainers;
@@ -105,7 +105,7 @@ namespace sharpAngleTemplate.Controllers
         }
 
         [HttpDelete]
-        [ValidUnProtected]
+        [Valid]
         public IActionResult Delete([FromBody] int id)
         {
             var trainerDb = dbContext.Trainers;

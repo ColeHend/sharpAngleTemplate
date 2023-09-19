@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace sharpAngleTemplate.CustomActionFilters
 {
-    public class ValidUnProtected: ActionFilterAttribute
+    public class Valid: ActionFilterAttribute
     {
         public override void OnActionExecuting(ActionExecutingContext context)
         {

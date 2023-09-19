@@ -64,7 +64,7 @@ namespace sharpAngleTemplate.Controllers
         }
 
         [HttpPost]
-        [ValidUnProtected]
+        [Valid]
         public async Task<IActionResult> Add([FromBody] PokemonAddReq poke)
         {  Console.WriteLine($"{DateTime.Now}) AddPokeReq:", poke);
             var pokemon = await PokeRepo.Add(poke);
@@ -79,7 +79,7 @@ namespace sharpAngleTemplate.Controllers
         }
 
         [HttpPost("Multi")]
-        [ValidUnProtected]
+        [Valid]
         public async Task<IActionResult> MultiAdd([FromBody] List<PokemonAddReq> pokemon)
         {
             Console.WriteLine($"{DateTime.Now}) AddMultiPokeReq:", pokemon);
@@ -96,7 +96,7 @@ namespace sharpAngleTemplate.Controllers
         }
 
         [HttpPut]
-        [ValidUnProtected]
+        [Valid]
         public async Task<IActionResult> Update([FromBody] PokemonUpdateReq pokemon)
         {
             Console.WriteLine($"{DateTime.Now}) UpdatePokeReq:", pokemon);
@@ -111,7 +111,7 @@ namespace sharpAngleTemplate.Controllers
         }
 
         [HttpDelete]
-        [ValidUnProtected]
+        [Valid]
         public async Task<IActionResult> Delete([FromBody] int id)
         {
             var pokemon = await PokeRepo.Remove(id);

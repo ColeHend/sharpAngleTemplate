@@ -14,7 +14,6 @@ namespace sharpAngleTemplate.tools
             return new UserDto(){
                 Id=user.Id,
                 Username=user.Username,
-                Password=user.Password,
                 MoreData=user.MoreData
             };
         }
@@ -23,7 +22,8 @@ namespace sharpAngleTemplate.tools
             return new User(){
                 Id=user.Id,
                 Username=user.Username,
-                Password=user.Password,
+                PasswordHash=user.PassHash,
+                PasswordSalt=user.PassSalt,
                 MoreData=user.MoreData
             };
         }

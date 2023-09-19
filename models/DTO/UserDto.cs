@@ -10,6 +10,8 @@ namespace sharpAngleTemplate.models.DTO
         public int Id { get; set; }
         public string Username { get; set; }
         public string Password { get; set; }
+        public byte[] PassHash { get; set; }
+        public byte[] PassSalt { get; set; }
         public string MoreData { get; set; }
     }
 }
