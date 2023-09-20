@@ -26,6 +26,7 @@ builder.Services.AddSingleton<IUserMapper,UserMapper>();
 builder.Services.AddTransient<IDbJsonService, DbJsonService>();
 builder.Services.AddTransient<ISQLPokemonRepository, SQLPokemonRepository>();
 builder.Services.AddTransient<ITokenRepository, TokenRepository>();
+builder.Services.AddTransient<IUserRepository, UserRepository>();
 
 // ----- Add Database Stuff ----
 

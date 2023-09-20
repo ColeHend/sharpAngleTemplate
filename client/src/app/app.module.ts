@@ -16,9 +16,10 @@ import { HomeComponent } from './components/home/home.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { DBService } from './services/database.service';
-import { HttpService } from './services/http.service';
 import { LoginComponent } from './components/loginBoxes/login.component';
 import { TokenInterceptor } from './tools/token.interceptor';
+import { RegisterComponent } from './components/register/register.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 const routes: Routes = [
   {
@@ -33,7 +34,8 @@ const routes: Routes = [
     MatNavComponent,
     HomeComponent,
     BodyBaseComponent,
-    LoginComponent
+    LoginComponent,
+    RegisterComponent
   ],
   imports: [
     BrowserModule,
@@ -42,7 +44,9 @@ const routes: Routes = [
     NoopAnimationsModule,
     MaterialModule,
     CommonModule,
-    HttpClientModule
+    HttpClientModule,
+    FormsModule,
+    ReactiveFormsModule
   ],
   providers: [NavbarService, NavigationService,ThemeService,DBService,
     {
