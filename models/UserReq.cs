@@ -15,7 +15,7 @@ namespace sharpAngleTemplate.models
         [Required]
         [MinLength(8,ErrorMessage = "Password not long enough!")]
         public string Password { get; set; }
-        public string MoreData { get; set; }
+        public string MoreData { get; set; } = String.Empty;
     }
     public class UserLoginReq
     {

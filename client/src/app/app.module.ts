@@ -16,6 +16,7 @@ import { HomeComponent } from './components/home/home.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { HttpClientModule } from '@angular/common/http';
 import { DBService } from './services/database.service';
+import { HttpService } from './services/http.service';
 
 const routes: Routes = [
   {
@@ -40,7 +41,7 @@ const routes: Routes = [
     CommonModule,
     HttpClientModule
   ],
-  providers: [NavbarService, NavigationService,ThemeService,DBService],
+  providers: [NavbarService, NavigationService,ThemeService,DBService,HttpService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
