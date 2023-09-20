@@ -27,7 +27,6 @@ namespace sharpAngleTemplate.models
     }
     public class UserGetReq
     {
-        public int Id { get; set; }
         public string Username { get; set; }
     }
     public class UserUpdateReq

@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using sharpAngleTemplate.models.DTO;
 using sharpAngleTemplate.models.entities;
 
@@ -30,7 +26,7 @@ namespace sharpAngleTemplate.tools
     }
     public interface IUserMapper
     {
-        public UserDto MapUser(User user);
-        public User MapUser(UserDto user);
+        UserDto MapUser(User user);
+        User MapUser(UserDto user);
     }
 }

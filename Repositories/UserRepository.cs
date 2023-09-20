@@ -3,6 +3,7 @@ using System.Security.Cryptography;
 using System.Text;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using sharpAngleTemplate.data;
 using sharpAngleTemplate.models.DTO;
 using sharpAngleTemplate.models.entities;
@@ -12,41 +13,43 @@ namespace sharpAngleTemplate.Repositories
 {
     public class UserRepository : IUserRepository
     {
-        private readonly UserMapper userMapper;
         private readonly SharpAngleContext dbContext;
         private readonly IHttpContextAccessor httpContextAccessor;
 
-        public UserRepository(UserMapper userMapper, SharpAngleContext dbContext, IHttpContextAccessor httpContextAccessor) 
+        public UserRepository(SharpAngleContext dbContext, IHttpContextAccessor httpContextAccessor) 
         {
             this.httpContextAccessor = httpContextAccessor;
-            this.userMapper = userMapper;
             this.dbContext = dbContext;
         }
 
         public int GetUserId() => int.Parse(httpContextAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-        public async Task<string[]> GetRoles(string username)
+        public async Task<string[]?> GetRoles(string username)
         {
-            var user = await this.GetUser(username);
-            return user.roles;
+            var user = this.GetUser(username);
+            return user?.userType;
         }
 
         public async Task<string[]> GetRoles(int id)
         {
             var user = await this.GetUser(id);
-            return user.roles;
+            return user.userType;
         }
-
-        public async Task<User?> GetUser(string username)
+        public List<User> GetAllUsers()
         {
-            var userDb = dbContext.Users;
-            var usernameDomain = await userDb.FirstOrDefaultAsync(u=>u.Username==username);
-            if (usernameDomain != null)
+            var users = dbContext.Users.ToList();
+            return users;
+        }
+        public User? GetUser(string username)
+        {
+            var send = dbContext.Users.Where(u=>u.Username==username).ToList();
+            if (send.Count() > 0)
+            {
+                return send[0];
+            } else
             {
                 return null;
             }
-
-            return usernameDomain;
         }
 
         public async Task<User?> GetUser(int id)
@@ -75,6 +78,5 @@ namespace sharpAngleTemplate.Repositories
             var ComputeHash = new HMACSHA512(passSalt).ComputeHash(Encoding.UTF8.GetBytes(password));
             return ComputeHash.SequenceEqual(passHash);
         }
-
     }
 }

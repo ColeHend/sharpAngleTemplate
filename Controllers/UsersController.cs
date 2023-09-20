@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using sharpAngleTemplate.CustomActionFilters;
 using sharpAngleTemplate.data;
 using sharpAngleTemplate.models;
@@ -46,14 +47,15 @@ namespace sharpAngleTemplate.Controllers
             }
 
             userRepository.CreatePasswordHash(user.Password, out byte[] passHash, out byte[] passSalt);
-
-            var roles = new List<string>(){"Guest","User","Admin"};
-            
+            // ------- change to something better proper roles ----
+            var roles = new List<string>(){"Guest"};
+            // var roles = new List<string>(){"Guest","User","Admin"};
+            // ----------------------------------------------------
             var newUser = new models.entities.User(){
                 Username=user.Username,
                 PasswordHash=passHash,
                 PasswordSalt=passSalt,
-                roles=roles.ToArray(),
+                userType=roles.ToArray(),
                 MoreData=user.MoreData
             };
             userDb.Add(newUser);
@@ -68,13 +70,13 @@ namespace sharpAngleTemplate.Controllers
         public async Task<IActionResult> Login([FromBody] UserLoginReq user)
         {
             // Check if user exists
-            var userEntity = await userRepository.GetUser(user.Username);
+            var userEntity = userRepository.GetUser(user.Username);
             if (userEntity != null)
             {
                 // Check if password is correct
                 if (userRepository.VerifyPasswordHash(user.Password, userEntity.PasswordHash, userEntity.PasswordSalt))
                 {
-                    return Ok(TokenRepo.CreateJWTToken(userEntity));
+                    return Ok(TokenRepo.CreateJWTToken(userEntity, userEntity.userType.ToList()));
                 }
             }
 
@@ -84,21 +86,20 @@ namespace sharpAngleTemplate.Controllers
 
         [HttpPost]
         [Valid]
-        [Authorize(Roles = "Guest;User;Admin")]
+        // [Authorize(Roles = "Guest;User;Admin")]
         public async Task<IActionResult> Get([FromBody] UserGetReq user)
         {
-            var usernameDomain = await userRepository.GetUser(user.Username);
-            var userIdDomain = await userRepository.GetUser(user.Id);
-            
-            if (usernameDomain != null)
+            if (string.IsNullOrEmpty(user.Username))
             {
-                return Ok(UserMapper.MapUser(usernameDomain));
-            } else if (userIdDomain != null)
-            {
-                return Ok(UserMapper.MapUser(userIdDomain));
+                return BadRequest("No username was found on the request!");
             }
 
-            return NotFound();
+            var send = userRepository.GetUser(user.Username);
+            if (send != null)
+            {
+                return Ok(UserMapper.MapUser(send));
+            }
+            return NotFound("No user was found");
         }
 
         [HttpPut]
@@ -139,7 +140,7 @@ namespace sharpAngleTemplate.Controllers
         public async Task<IActionResult> Delete([FromBody] DeleteUserReq user)
         {
             var userDb = dbContext.Users;
-            var userEntity = await userRepository.GetUser(user.Username);
+            var userEntity = userRepository.GetUser(user.Username);
             if (userEntity == null)
             {
                 return NotFound();

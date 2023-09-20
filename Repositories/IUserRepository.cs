@@ -7,9 +7,9 @@ namespace sharpAngleTemplate.Repositories
     public interface IUserRepository
     {
         public int GetUserId();
-        Task<User?> GetUser(string username);
+        User? GetUser(string username);
         Task<User?> GetUser(int id);
-
+        List<User> GetAllUsers();
         Task<string[]> GetRoles(string username);
         Task<string[]> GetRoles(int id);
         void CreatePasswordHash(string password, out byte[] passHash, out byte[] passSalt);

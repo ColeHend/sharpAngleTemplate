@@ -17,7 +17,7 @@ namespace sharpAngleTemplate.Controllers
         }
         // ---------------- Endpoints ------------------
         [HttpPost]
-        public IActionResult GetCollection([FromBody] AddMassDataReq request){
+        public IActionResult GetCollection([FromBody] GetCollectionReq request){
             Console.WriteLine("GetCollection: ",request);
             var CollectionName = request.CollectionName;
             var collection = _db.GetCollectionFromDB(CollectionName);

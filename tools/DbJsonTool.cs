@@ -12,25 +12,46 @@ namespace sharpAngleTemplate.tools
     public class DbJsonService : IDbJsonService
     {
         private DBCollection DatabaseCollection;
-        private string path;
+        private string path = GetExecutingDirectory().ToString();
         public DbJsonService()
         {
             DatabaseCollection = GetDB();
         }
         // ------- DatabaseCollection && DB JSON Interactions ---------
-        public DBCollection GetDB() {
-            var path = GetExecutingDirectory().ToString();
-            using (StreamReader r = new StreamReader($"{path}/json/db.json"))
+        /// <summary>
+        /// Gets a Json File.
+        /// </summary>
+        /// <typeparam name="T">The Type that matches the json structure.</typeparam>
+        /// <param name="name">the filename.</param>
+        /// <returns></returns>
+        public T? GetJson<T>(string name){
+            using (StreamReader r = new StreamReader($"{path}/data/{name}.json"))
             {
                 string json = r.ReadToEnd();
-                var item = JsonConvert.DeserializeObject<DBCollection>(json);
-                if (item == null)
+                var item = JsonConvert.DeserializeObject<T>(json);
+                return item;
+            }
+        }
+        public void SaveJson(string name, object value, bool append = false){
+            using (StreamWriter r = new StreamWriter($"{path}/data/{name}.json", append))
+            {
+                if (append)
                 {
-                    return new DBCollection();
-                } else
-                {
-                    return item;
+                    r.WriteLine(JsonConvert.SerializeObject(value));
+                } else {
+                    r.Write(JsonConvert.SerializeObject(value));
                 }
+            }
+        }
+
+        public DBCollection GetDB() {
+            var item = GetJson<DBCollection>("db");
+            if (item == null)
+            {
+                return new DBCollection();
+            } else
+            {
+                return item;
             }
         }
         public static DirectoryInfo GetExecutingDirectory()
@@ -39,12 +60,7 @@ namespace sharpAngleTemplate.tools
             return new FileInfo(location.AbsolutePath).Directory.Parent.Parent.Parent;
         }
         public void SyncDatabaseJSON(){
-            var path = GetExecutingDirectory().ToString();
-            string jsonSTR = JsonConvert.SerializeObject(DatabaseCollection);
-            using (StreamWriter r = new StreamWriter($"{path}/json/db.json", false))
-            {
-                r.Write(jsonSTR);
-            }
+            SaveJson("db",DatabaseCollection);
         }
 
         // --------- DatabaseCollection Interactions ----------
@@ -73,6 +89,7 @@ namespace sharpAngleTemplate.tools
             {
                 DatabaseCollection.collections[index].Data = data;
             }
+                SyncDatabaseJSON();
         }
         public void AddToDataCollection(string collectionName, string data) {
             var collectionIndex = GetCollectionIndex(collectionName);
@@ -80,6 +97,7 @@ namespace sharpAngleTemplate.tools
             {
                 DatabaseCollection?.collections[collectionIndex]?.Data?.Append(data ?? "");
             }
+                SyncDatabaseJSON();
         }
         public void CreateCollectionInDB(string collectionName, string[] data) {
             var alreadyExists = DatabaseCollection.collections.Find((value)=>value.Name==collectionName);
@@ -91,6 +109,8 @@ namespace sharpAngleTemplate.tools
         }
     }
     public interface IDbJsonService {
+        T? GetJson<T>(string name);
+        void SaveJson(string name, object value, bool append = false);
         DBCollection GetDB();
         void SyncDatabaseJSON();
         int GetCollectionIndex(string collectionName);

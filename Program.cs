@@ -1,8 +1,4 @@
-using Microsoft.Extensions.FileProviders;
-using Microsoft.AspNetCore.SpaServices;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
-using sharpAngleTemplate.Controllers;
-using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using sharpAngleTemplate.tools;
 using sharpAngleTemplate.data;
 using Microsoft.EntityFrameworkCore;
@@ -11,7 +7,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.AspNetCore.Identity;
-using sharpAngleTemplate.models.entities;
 using Swashbuckle.AspNetCore.Filters;
 using Microsoft.OpenApi.Models;
 
@@ -21,24 +16,18 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 
 builder.Services.AddSingleton<IPokemonMapper,PokemonMapper>();
-builder.Services.AddSingleton<IUserMapper,UserMapper>();
+builder.Services.AddSingleton<IDbJsonService, DbJsonService>();
 
-builder.Services.AddTransient<IDbJsonService, DbJsonService>();
+builder.Services.AddTransient<IUserMapper,UserMapper>();
+builder.Services.AddTransient<IUserRepository, UserRepository>();
 builder.Services.AddTransient<ISQLPokemonRepository, SQLPokemonRepository>();
 builder.Services.AddTransient<ITokenRepository, TokenRepository>();
-builder.Services.AddTransient<IUserRepository, UserRepository>();
 
 // ----- Add Database Stuff ----
-
-var connString = builder.Configuration.GetConnectionString("localDefault");
+// var location = "localDefault";
+var location = "work";
+var connString = builder.Configuration.GetConnectionString(location);
 builder.Services.AddDbContext<SharpAngleContext>(options=>options.UseSqlServer(connString));
-// builder.Services.AddDbContext<SessionContext>(options=>options.UseSqlServer(connString));
-
-// builder.Services.AddIdentityCore<User>()
-//     .AddRoles<IdentityRole>()
-//     .AddTokenProvider<DataProtectorTokenProvider<User>>("AuthProv")
-//     .AddEntityFrameworkStores<SharpAngleContext>()
-//     .AddDefaultTokenProviders();
 
 builder.Services.Configure<IdentityOptions>(options =>
 {
@@ -90,7 +79,6 @@ if (app.Environment.IsDevelopment())
 
 // app.UseHttpsRedirection();
 app.UseStaticFiles("/client");
-app.UseStaticFiles("/json");
 app.UseRouting();
 
 app.UseAuthentication();

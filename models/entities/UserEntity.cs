@@ -20,7 +20,7 @@ namespace sharpAngleTemplate.models.entities
         public byte[] PasswordHash { get; set; }
         public byte[] PasswordSalt { get; set; }
         [NotMapped]
-        public string[] roles { get; set; }
+        public string[] userType { get; set; }
         public List<IdentityRole> Roles { get; set; }
 
         public string MoreData { get; set; } = string.Empty;
