@@ -8,7 +8,11 @@ export class AuthService {
     private setToken(token:string){
         localStorage.setItem("token", token);
     }
-    public async register(username:string,password:string,moreData:string = ""){
+    public getToken()
+    {
+        return localStorage.getItem("token");
+    }
+    public register(username:string,password:string,moreData:string = ""){
         return this.http.post("/api/Users/Register",{
             username,
             password,

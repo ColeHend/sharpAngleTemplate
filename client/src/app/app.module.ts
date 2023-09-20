@@ -14,9 +14,11 @@ import { BodyBaseComponent } from './tools/components/body-base/body-base.compon
 import { MatNavComponent } from './tools/components/matnav/matnav.component';
 import { HomeComponent } from './components/home/home.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { DBService } from './services/database.service';
 import { HttpService } from './services/http.service';
+import { LoginComponent } from './components/loginBoxes/login.component';
+import { TokenInterceptor } from './tools/token.interceptor';
 
 const routes: Routes = [
   {
@@ -30,7 +32,8 @@ const routes: Routes = [
     NavbarComponent,
     MatNavComponent,
     HomeComponent,
-    BodyBaseComponent
+    BodyBaseComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,
@@ -41,7 +44,13 @@ const routes: Routes = [
     CommonModule,
     HttpClientModule
   ],
-  providers: [NavbarService, NavigationService,ThemeService,DBService,HttpService],
+  providers: [NavbarService, NavigationService,ThemeService,DBService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: TokenInterceptor,
+      multi: true
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

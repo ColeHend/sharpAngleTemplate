@@ -89,6 +89,7 @@ if (app.Environment.IsDevelopment())
 
 // app.UseHttpsRedirection();
 app.UseStaticFiles("/client");
+app.UseStaticFiles("/json");
 app.UseRouting();
 
 app.UseAuthentication();
