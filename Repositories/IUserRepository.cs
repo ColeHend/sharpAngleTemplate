@@ -6,11 +6,12 @@ namespace sharpAngleTemplate.Repositories
 {
     public interface IUserRepository
     {
-        Task<User> GetUser(string username);
-        Task<User> GetUser(int id);
+        public int GetUserId();
+        Task<User?> GetUser(string username);
+        Task<User?> GetUser(int id);
 
-        Task<User> GetRoles(string username);
-
+        Task<string[]> GetRoles(string username);
+        Task<string[]> GetRoles(int id);
         void CreatePasswordHash(string password, out byte[] passHash, out byte[] passSalt);
 
         bool VerifyPasswordHash(string password, byte[] passHash, byte[] passSalt);

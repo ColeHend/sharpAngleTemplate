@@ -10,6 +10,7 @@ namespace sharpAngleTemplate.models.entities
 {
     public class Pokemon
     {
+        [Key]
         public int Id { get; set; }
         public string PokeName { get; set; }
 

@@ -67,9 +67,8 @@ namespace sharpAngleTemplate.Controllers
         [Valid]
         public async Task<IActionResult> Login([FromBody] UserLoginReq user)
         {
-            var userDb = dbContext.Users;
             // Check if user exists
-            var userEntity = await userDb.FirstOrDefaultAsync(u=>u.Username==user.Username);
+            var userEntity = await userRepository.GetUser(user.Username);
             if (userEntity != null)
             {
                 // Check if password is correct
@@ -88,9 +87,8 @@ namespace sharpAngleTemplate.Controllers
         [Authorize(Roles = "Guest;User;Admin")]
         public async Task<IActionResult> Get([FromBody] UserGetReq user)
         {
-            var userDb = dbContext.Users;
-            var usernameDomain = await userDb.FirstOrDefaultAsync(u=>u.Username==user.Username);
-            var userIdDomain = await userDb.FirstOrDefaultAsync(u=>u.Id==user.Id);
+            var usernameDomain = await userRepository.GetUser(user.Username);
+            var userIdDomain = await userRepository.GetUser(user.Id);
             
             if (usernameDomain != null)
             {
@@ -108,8 +106,9 @@ namespace sharpAngleTemplate.Controllers
         [Authorize(Roles = "Guest;User;Admin")]
         public async Task<IActionResult> Update([FromBody] UserUpdateReq user)
         {
-            var userDb = dbContext.Users;
-            var userEntity = await userDb.FirstOrDefaultAsync(u=>u.Id==user.Id);
+            var userId = userRepository.GetUserId();
+            var userEntity = await userRepository.GetUser(userId);
+
             if (userEntity == null)
             {
                 return NotFound();
@@ -140,7 +139,7 @@ namespace sharpAngleTemplate.Controllers
         public async Task<IActionResult> Delete([FromBody] DeleteUserReq user)
         {
             var userDb = dbContext.Users;
-            var userEntity = await userDb.FirstOrDefaultAsync(u=>u.Id==user.Id);
+            var userEntity = await userRepository.GetUser(user.Username);
             if (userEntity == null)
             {
                 return NotFound();

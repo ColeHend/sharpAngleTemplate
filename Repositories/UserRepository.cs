@@ -1,6 +1,8 @@
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using sharpAngleTemplate.data;
 using sharpAngleTemplate.models.DTO;
 using sharpAngleTemplate.models.entities;
@@ -12,32 +14,51 @@ namespace sharpAngleTemplate.Repositories
     {
         private readonly UserMapper userMapper;
         private readonly SharpAngleContext dbContext;
+        private readonly IHttpContextAccessor httpContextAccessor;
 
-        public UserRepository(UserMapper userMapper, SharpAngleContext dbContext) 
+        public UserRepository(UserMapper userMapper, SharpAngleContext dbContext, IHttpContextAccessor httpContextAccessor) 
         {
+            this.httpContextAccessor = httpContextAccessor;
             this.userMapper = userMapper;
             this.dbContext = dbContext;
         }
 
-        public async Task<User> GetRoles(string username)
-        {
-            var userDb = dbContext.Users;
+        public int GetUserId() => int.Parse(httpContextAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-            throw new NotImplementedException();
+        public async Task<string[]> GetRoles(string username)
+        {
+            var user = await this.GetUser(username);
+            return user.roles;
         }
 
-        public async Task<User> GetUser(string username)
+        public async Task<string[]> GetRoles(int id)
         {
-            var userDb = dbContext.Users;
-
-            throw new NotImplementedException();
+            var user = await this.GetUser(id);
+            return user.roles;
         }
 
-        public async Task<User> GetUser(int id)
+        public async Task<User?> GetUser(string username)
         {
             var userDb = dbContext.Users;
+            var usernameDomain = await userDb.FirstOrDefaultAsync(u=>u.Username==username);
+            if (usernameDomain != null)
+            {
+                return null;
+            }
 
-            throw new NotImplementedException();
+            return usernameDomain;
+        }
+
+        public async Task<User?> GetUser(int id)
+        {
+            var userDb = dbContext.Users;
+            var usernameDomain = await userDb.FirstOrDefaultAsync(u=>u.Id==id);
+            if (usernameDomain != null)
+            {
+                return null;
+            }
+
+            return usernameDomain;
         }
 
         public void CreatePasswordHash(string password, out byte[] passHash, out byte[] passSalt)

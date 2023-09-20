@@ -12,6 +12,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.AspNetCore.Identity;
 using sharpAngleTemplate.models.entities;
+using Swashbuckle.AspNetCore.Filters;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -58,9 +60,21 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
     });
 
+builder.Services.AddHttpContextAccessor();
+
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c=>{
+    c.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme {
+        Description = "Example Value: bearer {token}",
+        In=ParameterLocation.Header,
+        Name="Authorization",
+        Type = SecuritySchemeType.ApiKey
+    });
+
+    c.OperationFilter<SecurityRequirementsOperationFilter>();
+});
 
 
 
