@@ -24,8 +24,8 @@ builder.Services.AddTransient<ISQLPokemonRepository, SQLPokemonRepository>();
 builder.Services.AddTransient<ITokenRepository, TokenRepository>();
 
 // ----- Add Database Stuff ----
-// var location = "localDefault";
-var location = "work";
+var location = "localDefault";
+// var location = "work";
 var connString = builder.Configuration.GetConnectionString(location);
 builder.Services.AddDbContext<SharpAngleContext>(options=>options.UseSqlServer(connString));
 

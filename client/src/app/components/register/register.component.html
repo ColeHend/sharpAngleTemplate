@@ -1,16 +1,16 @@
 <div>
     <h3>Register</h3>
-    <form action="post" [formGroup]="registerForm" (ngSubmit)="register">
+    <form method="post" [formGroup]="registerForm" (ngSubmit)="register">
         <div><input type="text" name="usernameR" id="usernameR" placeholder="username" formControlName="username"></div>
         <div *ngIf="username?.invalid && (username?.touched || username?.dirty)">
             Username not long enough
         </div>
 
-        <div><input type="text" name="passwordR" id="passwordR" placeholder="password" formControlName="password"></div>
+        <div><input type="password" name="passwordR" id="passwordR" placeholder="password" formControlName="password" ></div>
         <div *ngIf="password?.invalid && (password?.touched || password?.dirty)">
             Password not long enough
         </div>
     </form>
     <!-- [(ngModel)]="user.password" #password="ngModel" -->
-    <button type="submit">Submit</button>
+    <Button [disabled]="username?.invalid || password?.invalid" (click)="register()" type="submit">Submit</Button>
 </div>

@@ -1,5 +1,30 @@
 <div>
-    <h3>Login</h3>
-    <div><input type="text" name="usernameL" id="usernameL" placeholder="username" [value]="username"></div>
-    <div><input type="text" name="passwordL" id="passwordL" placeholder="password" [value]="password"></div>
+  <h3>Login</h3>
+  <form method="post" [formGroup]="loginForm" >
+    <div>
+      <input
+        type="text"
+        name="username"
+        id="username"
+        placeholder="username"
+        formControlName="username"
+      />
+    </div>
+    <div *ngIf="username?.invalid && (username?.touched || username?.dirty)">
+      Username not long enough
+    </div>
+    <div>
+      <input
+        type="password"
+        name="password"
+        id="password"
+        placeholder="password"
+        formControlName="password"
+      />
+    </div>
+    <div *ngIf="password?.invalid && (password?.touched || password?.dirty)">
+      Password not long enough
+    </div>
+    <Button [disabled]="username?.invalid || password?.invalid" (click)="login()" type="submit">Submit</Button>
+  </form>
 </div>

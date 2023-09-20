@@ -12,7 +12,6 @@ type formValue = "username" | "password";
   export class RegisterComponent implements OnInit{
     constructor(private authService:AuthService,private formBuilder:FormBuilder){}
 
-    public hasError = new BehaviorSubject<Error[]>([]);
     public registerForm = this.formBuilder.group({
         username: ["",[
             Validators.minLength(3),
@@ -23,23 +22,24 @@ type formValue = "username" | "password";
             Validators.required
         ]]
     });
+
     get username(){
         return this.registerForm.get("username")
     }
     get password(){
         return this.registerForm.get("password")
     }
-    ngOnInit(): void {
+
+    public ngOnInit(): void {
         
     }
-    public getFormVal(value:formValue){
-        return this.registerForm.get(value);
-    }
+    
     public register(){
         let userna = this.username?.value
         let pass = this.password?.value
         if (userna && pass) {
             this.authService.register(userna,pass).subscribe(res=>{
+                this.registerForm.reset();
                 console.log("Register Response: ",res);
             })
         }
