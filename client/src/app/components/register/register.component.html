@@ -12,5 +12,5 @@
         </div>
     </form>
     <!-- [(ngModel)]="user.password" #password="ngModel" -->
-    <Button [disabled]="username?.invalid || password?.invalid" (click)="register()" type="submit">Submit</Button>
+    <button mat-button [class]="(hoverTheme | async)" [disabled]="username?.invalid || password?.invalid" (click)="register()" type="submit">Submit</button>
 </div>

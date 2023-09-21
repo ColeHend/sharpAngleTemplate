@@ -42,30 +42,62 @@ $darkTheme-theme: mat.define-dark-theme((
 // Include theme styles for core and each component used in your app.
 // Alternatively, you can import and @include the theme mixins for each component
 // that you are using.
+
+// ------ Dark Theme --------
+$addPad:10px;
+@mixin trigger(){
+  font: 1em Roboto;
+}
+
 .darkTheme-primary {
   background-color: #212121;
   color: white;
+  @include trigger();
+  
 }
 .darkTheme-accent {
   background-color: #424242;
   color: white;
+  @include trigger();
 }
 .darkTheme-hover {
   :hover {
-    background-color: #616161;
+    link {
+      background-color: #616161;
+    }
+    font-size: 1.05rem;
   }
 }
+.darkTheme-button {
+  :hover {
+    // font-size: 1.1rem;
+    font-weight: bold;
+  }
+}
+
+// ------ Light Theme --------
+$textColor: #f6f7f7;
 .lightTheme-primary {
   background-color: #3F51B5;
-  color: black;
+  color: $textColor;
+  @include trigger();
 }
 .lightTheme-accent {
   background-color: #2196F3;
-  color: black;
+  color: $textColor;
+  @include trigger();
 }
 .lightTheme-hover {
   :hover {
-    background-color: #5C6BC0;
+    link {
+      background-color: #5C6BC0;
+    }
+    font-size: 1.05rem;
+  }
+}
+.lightTheme-button {
+  :hover {
+    font-weight: bolder;
   }
 }
 // @include mat.all-component-themes($darkTheme-theme);
@@ -73,4 +105,4 @@ $darkTheme-theme: mat.define-dark-theme((
 /* You can add global styles to this file, and also import other style files */
 
 html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+body { margin: 0; font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; }

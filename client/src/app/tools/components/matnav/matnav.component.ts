@@ -1,11 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject , combineLatest} from 'rxjs';
 import { ToolIcon } from 'src/app/models/tool-icon.model';
 import { NavbarService } from 'src/app/services/navbar.service';
 import { MenuItem } from 'src/app/models/menu-item.model';
 import { Tab } from 'src/app/models/tab.model';
 import { ThemeService } from 'src/app/services/theme.service';
-
 @Component({
   selector: 'app-matnav',
   templateUrl: './matnav.component.html',
@@ -44,8 +43,13 @@ export class MatNavComponent implements OnInit {
         this.accentTheme = this.themeService.getAccentTheme();
         this.hoverTheme = this.themeService.getHoverTheme();
 
-        this.primaryHover = `${this.primaryTheme.value} ${this.hoverTheme.value}`
-        this.accentHover = `${this.accentTheme.value} ${this.hoverTheme.value}`
+        combineLatest([this.primaryTheme,this.hoverTheme]).subscribe(([primaryTheme, hoverTheme])=>{
+          this.primaryHover = `${primaryTheme} ${hoverTheme}`
+        })
+        combineLatest([this.accentTheme,this.hoverTheme]).subscribe(([accentTheme, hoverTheme])=>{
+          this.accentHover = `${accentTheme} ${hoverTheme}`
+        })
+        
         this.themeService.changeTheme('darkTheme')
     }
 

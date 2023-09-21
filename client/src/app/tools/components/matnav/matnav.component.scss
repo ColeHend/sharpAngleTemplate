@@ -4,3 +4,22 @@
 .color {
   color: white;
 }
+
+* {
+  width: min-content;
+}
+#menu{
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  align-items: center;
+  * {
+    :not(mat-divider) {
+      justify-content: center;
+      width: min-content;
+    }
+    mat-divider {
+      width: 100%;
+    }
+  }
+}

@@ -5,8 +5,9 @@ import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatMenuModule} from '@angular/material/menu';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatTabsModule} from '@angular/material/tabs';
+import {MatDividerModule} from '@angular/material/divider';
 
 @NgModule({
-    exports: [MatToolbarModule, MatButtonModule, MatIconModule,MatMenuModule,MatTooltipModule,MatTabsModule],
+    exports: [MatToolbarModule, MatButtonModule, MatIconModule,MatMenuModule,MatTooltipModule,MatTabsModule,MatButtonModule,MatDividerModule],
 })
 export class MaterialModule {}

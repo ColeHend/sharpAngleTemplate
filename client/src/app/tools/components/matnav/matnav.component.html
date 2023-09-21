@@ -22,7 +22,13 @@
     </mat-toolbar-row>
 </mat-toolbar>
 <mat-menu [class]="(primaryTheme | async) ?? ''" #menu="matMenu">
-    <button mat-menu-item *ngFor="let item of menuItems | async" [matTooltip]="item.tooltip ?? ''" matTooltipPosition="left" [class]="primaryHover" (click)="validCallback(item.callback)">{{item.name}}</button>
+    <div id="menu">
+        <div *ngFor="let item of (menuItems | async);index as i"  [class]="primaryHover">
+            <mat-divider *ngIf="i == 0"></mat-divider>
+            <button mat-menu-item  [matTooltip]="item.tooltip ?? ''" matTooltipPosition="left"  (click)="validCallback(item.callback)">{{item.name}}</button>
+            <mat-divider></mat-divider>
+        </div>
+    </div>
 </mat-menu>
 <ng-container *ngIf="showTabs | async">
     <ng-container *ngFor="let type of tabs | async; index as i">

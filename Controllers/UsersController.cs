@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using sharpAngleTemplate.CustomActionFilters;
@@ -70,13 +71,36 @@ namespace sharpAngleTemplate.Controllers
         public async Task<IActionResult> Login([FromBody] UserLoginReq user)
         {
             // Check if user exists
-            var userEntity = userRepository.GetUser(user.Username);
+            Console.WriteLine(" ");
+            Console.WriteLine("Login Request: ",user.Username.ToString());
+            Console.WriteLine(" ");
+            var userEntity = await userRepository.GetUser(user.Username);
             if (userEntity != null)
             {
                 // Check if password is correct
                 if (userRepository.VerifyPasswordHash(user.Password, userEntity.PasswordHash, userEntity.PasswordSalt))
                 {
-                    return Ok(TokenRepo.CreateJWTToken(userEntity, userEntity.userType.ToList()));
+                    var rollin = new List<string>();
+                    string[] backup = {"Guest"};
+                    string[] rolesEntity = userEntity.userType != null && userEntity.userType.Count() > 0 ? userEntity.userType : backup;
+                    foreach (var role in rolesEntity) 
+                    {
+                        rollin.Add(string.IsNullOrEmpty(role) ? "Guest": role);
+                    }
+
+                    string token = TokenRepo.CreateJWTToken(userEntity, rollin);
+                    var BuildTokenJson = (string token)=>{
+                        if (string.IsNullOrEmpty(token) == false)
+                        {
+                            var part1 = "{\"data\": ";
+                            var part2 = $" \"{token}\"";
+                            var part3 = "}";
+                            return part1 + part2 + part3;
+                        }
+                        return string.Empty;
+                    };
+                        return Ok(BuildTokenJson(token));
+                        // return new ContentResult() { Content = token, StatusCode = 200 };
                 }
             }
 
@@ -94,7 +118,7 @@ namespace sharpAngleTemplate.Controllers
                 return BadRequest("No username was found on the request!");
             }
 
-            var send = userRepository.GetUser(user.Username);
+            var send = await userRepository.GetUser(user.Username);
             if (send != null)
             {
                 return Ok(UserMapper.MapUser(send));
@@ -140,7 +164,7 @@ namespace sharpAngleTemplate.Controllers
         public async Task<IActionResult> Delete([FromBody] DeleteUserReq user)
         {
             var userDb = dbContext.Users;
-            var userEntity = userRepository.GetUser(user.Username);
+            var userEntity = await userRepository.GetUser(user.Username);
             if (userEntity == null)
             {
                 return NotFound();

@@ -26,23 +26,23 @@ namespace sharpAngleTemplate.Repositories
 
         public async Task<string[]?> GetRoles(string username)
         {
-            var user = this.GetUser(username);
+            var user = await this.GetUser(username);
             return user?.userType;
         }
 
-        public async Task<string[]> GetRoles(int id)
+        public async Task<string[]?> GetRoles(int id)
         {
             var user = await this.GetUser(id);
-            return user.userType;
+            return user?.userType;
         }
-        public List<User> GetAllUsers()
+        public async Task<List<User>> GetAllUsers()
         {
-            var users = dbContext.Users.ToList();
+            var users = await dbContext.Users.ToListAsync();
             return users;
         }
-        public User? GetUser(string username)
+        public async Task<User?> GetUser(string username)
         {
-            var send = dbContext.Users.Where(u=>u.Username==username).ToList();
+            var send = await dbContext.Users.Where(u=>u.Username==username).ToListAsync();
             if (send.Count() > 0)
             {
                 return send[0];

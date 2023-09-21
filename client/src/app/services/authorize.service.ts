@@ -1,6 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { tap } from "rxjs";
+import { RegisterReq } from "../models/requests/register.model";
 
 @Injectable({providedIn:'root'})
 export class AuthService {
@@ -20,12 +21,16 @@ export class AuthService {
         });
     }
     public login(username:string,password:string){
-        let response = this.http.post("/api/Users/Login",{
+        let req:RegisterReq = {
             username,
             password
-        });
+        }
+        let response = this.http.post<defResponse>("/api/Users/Login",req);
         return response.pipe(tap((val)=>{
-            this.setToken(JSON.stringify(val))
+            this.setToken(val.data)
         }));
     }
+}
+interface defResponse {
+    data:string
 }

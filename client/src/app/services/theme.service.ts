@@ -8,6 +8,7 @@ export class ThemeService {
     private primaryTheme = new BehaviorSubject<string>(`${this.currentTheme.value}-primary`);
     private accentTheme = new BehaviorSubject<string>(`${this.currentTheme.value}-accent`);
     private hoverTheme = new BehaviorSubject<string>(`${this.currentTheme.value}-hover`);
+    private buttonTheme = new BehaviorSubject<string>(`${this.currentTheme.value}-button`);
 
     public getPrimaryTheme(){
         return this.primaryTheme
@@ -21,11 +22,16 @@ export class ThemeService {
         return this.hoverTheme
     }
 
+    public getButtonTheme(){
+        return this.buttonTheme
+    }
+
     public changeTheme(theme:themes){
         this.currentTheme.next(theme)
         this.primaryTheme.next(`${this.currentTheme.value}-primary`);
         this.accentTheme.next(`${this.currentTheme.value}-accent`)
         this.hoverTheme.next(`${this.currentTheme.value}-hover`)
+        this.buttonTheme.next(`${this.currentTheme.value}-button`)
     }
 
 }

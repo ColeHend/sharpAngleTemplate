@@ -2,6 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
 import { BehaviorSubject, combineLatest } from "rxjs";
 import { AuthService } from 'src/app/services/authorize.service';
+import { ThemeService } from "src/app/services/theme.service";
 
 type formValue = "username" | "password";
 @Component({
@@ -10,8 +11,8 @@ type formValue = "username" | "password";
     styleUrls: ['./register.component.scss']
 })
   export class RegisterComponent implements OnInit{
-    constructor(private authService:AuthService,private formBuilder:FormBuilder){}
-
+    constructor(private themeService: ThemeService,private authService:AuthService,private formBuilder:FormBuilder){}
+    
     public registerForm = this.formBuilder.group({
         username: ["",[
             Validators.minLength(3),
@@ -22,14 +23,15 @@ type formValue = "username" | "password";
             Validators.required
         ]]
     });
-
+    
     get username(){
         return this.registerForm.get("username")
     }
     get password(){
         return this.registerForm.get("password")
     }
-
+    public hoverTheme = this.themeService.getHoverTheme();
+    
     public ngOnInit(): void {
         
     }

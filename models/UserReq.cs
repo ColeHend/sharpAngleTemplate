@@ -20,14 +20,16 @@ namespace sharpAngleTemplate.models
     public class UserLoginReq
     {
         [Required]
-        public string Username { get; set; }
+        [MinLength(3,ErrorMessage = "Username not long enough!")]
+        public string Username { get; set; } = String.Empty;
         
         [Required]
-        public string Password { get; set; }
+        [MinLength(8,ErrorMessage = "Password not long enough!")]
+        public string Password { get; set; } = String.Empty;
     }
     public class UserGetReq
     {
-        public string Username { get; set; }
+        public string Username { get; set; } = String.Empty;
     }
     public class UserUpdateReq
     {
@@ -36,21 +38,21 @@ namespace sharpAngleTemplate.models
 
         [Required]
         [MinLength(3,ErrorMessage = "Username not long enough!")]
-        public string Username { get; set; }
+        public string Username { get; set; } = String.Empty;
 
         [Required]
         [MinLength(8,ErrorMessage = "Password not long enough!")]
-        public string Password { get; set; }
-        public string MoreData { get; set; }
+        public string Password { get; set; } = String.Empty;
+        public string MoreData { get; set; } = String.Empty;
     }
     public class DeleteUserReq
     {
         [Required]
         public int Id { get; set; }
         [Required]
-        public string Username { get; set; }
+        public string Username { get; set; } = String.Empty;
         [Required]
-        public string Password { get; set; }
+        public string Password { get; set; } = String.Empty;
 
     }
 }

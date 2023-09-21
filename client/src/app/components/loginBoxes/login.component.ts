@@ -1,6 +1,7 @@
 import { Component } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 import { AuthService } from 'src/app/services/authorize.service';
+import { ThemeService } from "src/app/services/theme.service";
 
 @Component({
     selector: 'app-loginBoxes',
@@ -8,7 +9,8 @@ import { AuthService } from 'src/app/services/authorize.service';
     styleUrls: ['./login.component.scss']
   })
   export class LoginComponent {
-      constructor(private authService:AuthService,private formBuilder:FormBuilder){}
+      constructor(private themeService: ThemeService,private authService:AuthService,private formBuilder:FormBuilder){}
+      public hoverTheme = this.themeService.getHoverTheme();
       
       public loginForm = this.formBuilder.group({
         username: ["",[
@@ -32,10 +34,16 @@ import { AuthService } from 'src/app/services/authorize.service';
         let userna = this.username?.value
         let pass = this.password?.value
         if (userna && pass) {
-            this.authService.login(userna,pass).subscribe((value)=>{
-                this.loginForm.reset();
-                console.log("Login Response: ",value);
-            })
+            this.authService.login(userna,pass).subscribe({
+                next: (value)=>{
+                    this.loginForm.reset();
+
+                },
+                error: (err)=>{
+                    console.error(err)
+                }
+            });
         }
     }
   }
+  

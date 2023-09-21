@@ -15,8 +15,11 @@ namespace sharpAngleTemplate.Repositories
             this.configuration = configuration;
         }
 
-        public string CreateJWTToken(User user, List<string>? roles = null)
+        public string? CreateJWTToken(User user, List<string>? roles = null)
         {
+            if (string.IsNullOrEmpty(user.Username) == false)
+            {
+                
             var claims = new List<Claim>(){
                 new Claim(ClaimTypes.Name, user.Username)
             };
@@ -26,7 +29,14 @@ namespace sharpAngleTemplate.Repositories
             } else {
                 foreach (var role in roles)
                 {
-                    claims.Add(new Claim(ClaimTypes.Role,role));
+                    if (string.IsNullOrEmpty(role) == false)
+                    {
+                        claims.Add(new Claim(ClaimTypes.Role,role));
+                    }
+                }
+                if (claims.Count() == 1)
+                {
+                    claims.Add(new Claim(ClaimTypes.Role,"Guest"));
                 }
             }
 
@@ -41,6 +51,9 @@ namespace sharpAngleTemplate.Repositories
             );
 
             return new JwtSecurityTokenHandler().WriteToken(token);
+            }else {
+                return null;
+            }
         }
     }
 }

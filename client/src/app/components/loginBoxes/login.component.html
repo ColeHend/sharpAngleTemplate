@@ -25,6 +25,6 @@
     <div *ngIf="password?.invalid && (password?.touched || password?.dirty)">
       Password not long enough
     </div>
-    <Button [disabled]="username?.invalid || password?.invalid" (click)="login()" type="submit">Submit</Button>
+    <button mat-button [class]="(hoverTheme | async)" [disabled]="username?.invalid || password?.invalid" (click)="login()" type="submit">Submit</button>
   </form>
 </div>
