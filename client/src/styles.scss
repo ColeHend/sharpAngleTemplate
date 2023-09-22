@@ -103,6 +103,8 @@ $textColor: #f6f7f7;
 // @include mat.all-component-themes($darkTheme-theme);
 
 /* You can add global styles to this file, and also import other style files */
-
+.smallInput{
+  width: fit-content;
+}
 html, body { height: 100%; }
 body { margin: 0; font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; }

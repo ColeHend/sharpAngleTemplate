@@ -23,6 +23,14 @@ import { ThemeService } from "src/app/services/theme.service";
         ]]
     });
 
+    public usernameIn = ()=>this.authService.setUsername(this.username?.value ?? "");
+    public passwordIn = ()=>this.authService.setPassword(this.password?.value ?? "");
+
+    public isValidUpdate(){
+        let usernameValid = !this.loginForm.get("username")?.errors && !this.loginForm.get("username")?.pristine
+        let passswordValid = !this.loginForm.get("passsword")?.errors && !this.loginForm.get("passsword")?.pristine
+        this.authService.switchLoginStatus(usernameValid);
+    }
     get username(){
         return this.loginForm.get("username")
     }

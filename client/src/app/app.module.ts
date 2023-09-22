@@ -20,6 +20,9 @@ import { LoginComponent } from './components/loginBoxes/login.component';
 import { TokenInterceptor } from './tools/token.interceptor';
 import { RegisterComponent } from './components/register/register.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { LoginModal } from './components/modals/login/login.component';
+import { RegisterModal } from './components/modals/register/register.component';
+
 
 const routes: Routes = [
   {
@@ -35,7 +38,9 @@ const routes: Routes = [
     HomeComponent,
     BodyBaseComponent,
     LoginComponent,
-    RegisterComponent
+    RegisterComponent,
+    LoginModal,
+    RegisterModal
   ],
   imports: [
     BrowserModule,
@@ -46,7 +51,8 @@ const routes: Routes = [
     CommonModule,
     HttpClientModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    
   ],
   providers: [NavbarService, NavigationService,ThemeService,DBService,
     {

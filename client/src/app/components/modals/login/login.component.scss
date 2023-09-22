@@ -1,0 +1,15 @@
+$morePadding: 10px;
+$moreMargin: 0px;
+#loginModal {
+    padding: $morePadding;
+    margin: $moreMargin;
+    :nth-child(n){
+        div {
+            display: flex;
+            flex-direction: column;
+            fl
+
+        }
+    }
+
+}
