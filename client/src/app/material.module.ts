@@ -8,11 +8,11 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatInputModule } from '@angular/material/input';
-
+import {MatCheckboxModule} from '@angular/material/checkbox';
 @NgModule({
     exports: [
         MatToolbarModule, MatButtonModule, MatIconModule, MatMenuModule, MatTooltipModule, MatTabsModule, MatButtonModule, MatDividerModule, MatDialogModule,
-        MatInputModule
+        MatInputModule, MatCheckboxModule
     ],
 })
 export class MaterialModule { }

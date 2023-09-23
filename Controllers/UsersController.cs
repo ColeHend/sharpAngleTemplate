@@ -12,6 +12,7 @@ using Newtonsoft.Json;
 using sharpAngleTemplate.CustomActionFilters;
 using sharpAngleTemplate.data;
 using sharpAngleTemplate.models;
+using sharpAngleTemplate.models.entities;
 using sharpAngleTemplate.Repositories;
 using sharpAngleTemplate.tools;
 
@@ -72,7 +73,7 @@ namespace sharpAngleTemplate.Controllers
         {
             // Check if user exists
             Console.WriteLine(" ");
-            Console.WriteLine("Login Request: ",user.Username.ToString());
+            Console.WriteLine($"Login Request: {JsonConvert.SerializeObject(user)} ");
             Console.WriteLine(" ");
             var userEntity = await userRepository.GetUser(user.Username);
             if (userEntity != null)
@@ -92,14 +93,12 @@ namespace sharpAngleTemplate.Controllers
                     var BuildTokenJson = (string token)=>{
                         if (string.IsNullOrEmpty(token) == false)
                         {
-                            var part1 = "{\"data\": ";
-                            var part2 = $" \"{token}\"";
-                            var part3 = "}";
-                            return part1 + part2 + part3;
+                            
+                            return token.SendAsJson();
                         }
                         return string.Empty;
                     };
-                        return Ok(BuildTokenJson(token));
+                        return Ok(BuildTokenJson(token).SendAsJson());
                         // return new ContentResult() { Content = token, StatusCode = 200 };
                 }
             }
@@ -109,21 +108,60 @@ namespace sharpAngleTemplate.Controllers
         }
 
         [HttpPost]
-        [Valid]
+        public async Task<IActionResult> Verify()
+        {
+            var userId = await userRepository.GetUserId();
+            if (userId == null)
+            {
+                Console.WriteLine("- \n Failed To find UserID for Verification! \n -");
+            } else {
+                Console.WriteLine($"- \n UserID: {userId} \n -");
+            }
+            if (userId != null)
+            {
+
+                var userToSend = await userRepository.GetUserId((int)userId);
+                Console.WriteLine($"- \n userToSend UserID: {userToSend?.Id} \n -");
+
+                if (userToSend != null)
+                {
+                    return Ok(UserMapper.MapUser(userToSend));
+                } else
+                {
+                    var username = userRepository.GetUsername();
+                    if (username != null)
+                    {
+                        var userEntity = await userRepository.GetUser(username);
+                        Console.WriteLine($"- \n username: {username}, {userEntity?.Username}\n -");
+
+                        if (userEntity != null)
+                        {
+                            Console.WriteLine("-\nOk sent!\n-");
+                            return Ok(UserMapper.MapUser(userEntity));
+                        }
+                    }
+                }
+                Console.WriteLine("-\nBadRequest sent!\n-");
+                return BadRequest("No user was found!");
+            } else {
+                Console.WriteLine("-\nUnauthorized sent!\n-");
+                return Unauthorized();
+            }
+        }
+
+        [HttpPost]
         // [Authorize(Roles = "Guest;User;Admin")]
         public async Task<IActionResult> Get([FromBody] UserGetReq user)
         {
-            if (string.IsNullOrEmpty(user.Username))
+            if (user.Username != null)
             {
-                return BadRequest("No username was found on the request!");
+                var send = await userRepository.GetUser(user.Username);
+                if (send != null)
+                {
+                    return Ok(UserMapper.MapUser(send).SendAsJson());
+                }
             }
-
-            var send = await userRepository.GetUser(user.Username);
-            if (send != null)
-            {
-                return Ok(UserMapper.MapUser(send));
-            }
-            return NotFound("No user was found");
+            return NotFound("No user was found".SendAsJson());
         }
 
         [HttpPut]
@@ -131,31 +169,36 @@ namespace sharpAngleTemplate.Controllers
         [Authorize(Roles = "Guest;User;Admin")]
         public async Task<IActionResult> Update([FromBody] UserUpdateReq user)
         {
-            var userId = userRepository.GetUserId();
-            var userEntity = await userRepository.GetUser(userId);
-
-            if (userEntity == null)
+            var userId = await userRepository.GetUserId();
+            User? userEntity;
+            if (userId != null)
             {
-                return NotFound();
-            }
+                userEntity = await userRepository.GetUserId((int)userId);
+                if (userEntity == null)
+                {
+                    return NotFound();
+                }
+                if (user.Username != null)
+                {
+                    userEntity.Username = user.Username;
+                }
+                // Need to ReEncrypt
+                // if (user.Password != null)
+                // {
+                //     userDomain.Password = user.Password;
+                // }
 
-            if (user.Username != null)
+                if (user.MoreData != null)
+                {
+                    userEntity.MoreData = user.MoreData;
+                }
+                dbContext.SaveChanges();
+
+                return Ok(UserMapper.MapUser(userEntity).SendAsJson());
+            } else
             {
-                userEntity.Username = user.Username;
+                return Unauthorized();
             }
-            // Need to ReEncrypt
-            // if (user.Password != null)
-            // {
-            //     userDomain.Password = user.Password;
-            // }
-
-            if (user.MoreData != null)
-            {
-                userEntity.MoreData = user.MoreData;
-            }
-            dbContext.SaveChanges();
-
-            return Ok(UserMapper.MapUser(userEntity));
         }
 
         [HttpDelete]
@@ -164,7 +207,7 @@ namespace sharpAngleTemplate.Controllers
         public async Task<IActionResult> Delete([FromBody] DeleteUserReq user)
         {
             var userDb = dbContext.Users;
-            var userEntity = await userRepository.GetUser(user.Username);
+            var userEntity = await userRepository.GetUser(user.Username.SendAsJson());
             if (userEntity == null)
             {
                 return NotFound();

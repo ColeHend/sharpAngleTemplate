@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using sharpAngleTemplate.CustomActionFilters;
 using sharpAngleTemplate.data;
 using sharpAngleTemplate.models;
+using sharpAngleTemplate.Repositories;
 using sharpAngleTemplate.tools;
 
 namespace sharpAngleTemplate.Controllers
@@ -34,7 +35,7 @@ namespace sharpAngleTemplate.Controllers
                 return NotFound();
             }
 
-            return Ok(PokeMapper.MapTrainer(trainer));
+            return Ok(PokeMapper.MapTrainer(trainer).SendAsJson());
         }
         
         [HttpGet]
@@ -42,7 +43,7 @@ namespace sharpAngleTemplate.Controllers
         {
             var trainerDb = dbContext.Trainers;
             var trainerDex = await trainerDb.ToListAsync();
-            return Ok(PokeMapper.MapMultiTrainer(trainerDex));
+            return Ok(PokeMapper.MapMultiTrainer(trainerDex).SendAsJson());
         }
 
         [HttpPost]
@@ -58,7 +59,7 @@ namespace sharpAngleTemplate.Controllers
             trainerDb.Add(train);
             dbContext.SaveChanges();
             
-            return Ok(PokeMapper.MapTrainer(trainerDb.Find(train)));
+            return Ok(PokeMapper.MapTrainer(trainerDb.Find(train)).SendAsJson());
         }
 
         [HttpPost("Multi")]
@@ -77,7 +78,7 @@ namespace sharpAngleTemplate.Controllers
             }
             var theTrainers = trainerDb.ToList().FindAll(t=>t.UserId==trainers[0].UserId);
 
-            return Ok(PokeMapper.MapMultiTrainer(theTrainers));
+            return Ok(PokeMapper.MapMultiTrainer(theTrainers).SendAsJson());
         }
 
         [HttpPut]
@@ -101,7 +102,7 @@ namespace sharpAngleTemplate.Controllers
             }
             dbContext.SaveChanges();
 
-            return Ok(PokeMapper.MapTrainer(trainerDomain));
+            return Ok(PokeMapper.MapTrainer(trainerDomain).SendAsJson());
         }
 
         [HttpDelete]

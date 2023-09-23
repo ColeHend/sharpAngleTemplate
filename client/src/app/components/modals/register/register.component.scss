@@ -1,0 +1,32 @@
+$morePadding: 10px;
+$moreMargin: 0px;
+.registerModal {
+    mat-dialog-container {
+        padding: 0 !important;
+    }
+}
+#registerModal {//whole modal window
+    height: calc(100% - 98px);
+    #registerBoxes {// between bars inside wrapper
+        display: block;
+        width: 100%;
+        height: 100%;
+    }
+    :nth-child(n){
+        div {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+    }
+}
+#styleBarr{
+    width: 100%;
+    height: 50px;
+    top: 0px;
+}
+#styleBarr2{
+    width: 100%;
+    height: 48px;
+    bottom: 0px;
+}

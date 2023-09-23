@@ -1,35 +1,31 @@
-<div class="smallInput">
-  <h3 class="smallInput">Login</h3>
-  <form class="smallInput" method="post" [formGroup]="loginForm" (ngSubmit)="loginForm.reset()" >
-    <div class="smallInput">
+<div id="loginWrapper" [className]="(accentTheme | async)">
+  <h2 class="loginHeader">Login</h2>
+  <form class="loginForm" method="post" [formGroup]="loginForm" (ngSubmit)="loginForm.reset()" >
+    <div class="usernameDiv" >
       <input 
-        (keydown)="usernameIn()"
         type="text"
         name="username"
-        id="username"
-        placeholder="username"
+        id="username" 
+        placeholder="username*"
         formControlName="username"
-        
       />
     </div>
-    <div class="smallInput error" *ngIf="username?.invalid && (username?.touched || username?.dirty)">
+    <div class="error" *ngIf="username?.invalid && (username?.dirty ||!username?.pristine)">
       Username not long enough
     </div>
-    <div class="smallInput">
+    <div class="passwordDiv">
       <input
-        (keydown)="passwordIn()"
         type="password"
         name="password"
         id="password"
-        placeholder="password"
+        placeholder="password*"
         formControlName="password"
-        
       />
     </div>
-    <div class="smallInput error" *ngIf="password?.invalid && (password?.touched || password?.dirty)">
+    <div class="error" *ngIf="password?.invalid && (password?.touched || password?.dirty)">
       Password not long enough
     </div>
-    <ng-content></ng-content>
-    
+
+    <button mat-button [class]="(hoverTheme | async)" [disabled]="password?.invalid || username?.invalid" (click)="login()" type="submit">Submit</button>
   </form>
 </div>

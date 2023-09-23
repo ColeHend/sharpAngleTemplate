@@ -37,7 +37,7 @@ namespace sharpAngleTemplate.Controllers
 
             if (onePoke != null)
             {
-                return Ok(PokeMapper.MapPokemon(onePoke));
+                return Ok(PokeMapper.MapPokemon(onePoke).SendAsJson());
             }
             else
             {
@@ -60,7 +60,7 @@ namespace sharpAngleTemplate.Controllers
             Console.WriteLine($"{DateTime.Now}) GetAllPokeReq:");
 
 
-            return Ok(PokeMapper.MapMultiPokemon(pokemon));
+            return Ok(PokeMapper.MapMultiPokemon(pokemon).SendAsJson());
         }
 
         [HttpPost]
@@ -74,7 +74,7 @@ namespace sharpAngleTemplate.Controllers
                 return BadRequest();
             }
 
-            return Ok(PokeMapper.MapPokemon(pokemon));
+            return Ok(PokeMapper.MapPokemon(pokemon).SendAsJson());
 
         }
 
@@ -91,8 +91,9 @@ namespace sharpAngleTemplate.Controllers
             {
                 await PokeRepo.Add(mon);
             }
+            var pokeToSend = await PokeRepo.Get();
 
-            return Ok(await PokeRepo.Get());
+            return pokeToSend != null? Ok(pokeToSend.SendAsJson()) : BadRequest();
         }
 
         [HttpPut]
@@ -103,7 +104,7 @@ namespace sharpAngleTemplate.Controllers
             var pokeFromDb = await PokeRepo.Update(pokemon);
             if (pokeFromDb != null)
             {
-                return Ok(pokeFromDb);  
+                return Ok(pokeFromDb.SendAsJson());  
             } else
             {
                 return NotFound();

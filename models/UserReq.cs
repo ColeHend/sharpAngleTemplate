@@ -29,7 +29,7 @@ namespace sharpAngleTemplate.models
     }
     public class UserGetReq
     {
-        public string Username { get; set; } = String.Empty;
+        public string? Username { get; set; } = String.Empty;
     }
     public class UserUpdateReq
     {

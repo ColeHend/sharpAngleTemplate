@@ -8,36 +8,67 @@ import { MAT_DIALOG_DATA, MatDialog, MatDialogConfig } from '@angular/material/d
 import { ComponentType } from '@angular/cdk/portal';
 import { LoginModal } from '../components/modals/login/login.component';
 import { RegisterModal } from '../components/modals/register/register.component';
+import { AuthService } from './authorize.service';
 
 @Injectable({providedIn:'root'})
 export class NavigationService {
-    constructor(private navbarService: NavbarService, private themeService:ThemeService,public dialog: MatDialog){}
+    constructor(private navbarService: NavbarService, private themeService:ThemeService,public dialog: MatDialog, private authService:AuthService){}
     private themeBool = new BehaviorSubject<boolean>(false);
-    public createMenu(){
+    private RegisterMenuObject = {
+        name:"Register",
+        callback: ()=>{
+            this.showModal(RegisterModal, {
+                height: "430px",
+                width: "398px",
+                panelClass: "RegisterModal"
+            }).afterClosed().subscribe((value)=>{
+            })
+        }
+    };
+    private LoginMenuObject = {
+        name:"Login",
+        callback: ()=>{
+            this.showModal(LoginModal, {
+                height: "430px",
+                width: "398px",
+                panelClass: "LoginModal"
+            }).afterClosed().subscribe((value)=>{
+                
+            })
+        }
+    }
+    public setLoggedInMenu(){
         this.navbarService.setMenuItems(
             {
-                name:"Login",
+                name:'Homebar',
+                callback:()=>{
+                    this.showHomeBar();
+                }, 
+                tooltip:"Show Home Navbar"
+            },
+            {
+                name:'Change Theme', 
                 callback: ()=>{
-                    this.showModal(LoginModal, {
-                        maxHeight: "260px",
-                        maxWidth: "300px",
-                        minHeight: "160px",
-                        minWidth: "190px"
-
-                    }).afterClosed().subscribe((value)=>{
-
-                    })
-                }
-            },{
-                name:"Register",
-                callback: ()=>{
-                    this.showModal(RegisterModal, {
-                        width: "30vw"
-                    }).afterClosed().subscribe((value)=>{
-                        
-                    })
+                    if (!this.themeBool.value) {
+                        this.themeService.changeTheme('lightTheme')
+                        this.themeBool.next(true)
+                    } else {
+                        this.themeService.changeTheme('darkTheme')
+                        this.themeBool.next(false)
+                    }
                 }
             },
+            {
+                name:"Logout",
+                callback: ()=>{
+                    this.authService.logout();
+                }
+            }
+        );
+    }
+    public setLoggedOutMenu(){
+        this.navbarService.setMenuItems(
+            this.LoginMenuObject, this.RegisterMenuObject,
             {
                 name:'Homebar',
                 callback:()=>{
@@ -63,6 +94,7 @@ export class NavigationService {
         const theDialog = this.dialog.open(component, config)
         return theDialog;
     }
+
     private hideAll(){
         this.navbarService.hideSecondRow();
         this.navbarService.hideTabs();

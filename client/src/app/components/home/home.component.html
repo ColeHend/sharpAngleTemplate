@@ -11,7 +11,8 @@
     </div>
     <div>
         <h1>Security Testing</h1>
-        <app-loginBoxes></app-loginBoxes>
-        <app-registerBoxes></app-registerBoxes>
+        <div *ngIf="(isLoggedIn | async)">
+           Hello logged in user named! {{(username | async)}}
+        </div>
     </div>
 </app-bodyBase>

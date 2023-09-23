@@ -14,12 +14,15 @@ import { ThemeService } from "src/app/services/theme.service";
     constructor(public dialogRef: MatDialogRef<LoginModal>, @Inject(MAT_DIALOG_DATA) public data: DialogData, public authService: AuthService, public themeService: ThemeService) {}
     public usernameValid:BehaviorSubject<boolean> = new BehaviorSubject(false);
     public passwordValid:BehaviorSubject<boolean> = new BehaviorSubject(false);
+    public primaryTheme:BehaviorSubject<string> = new BehaviorSubject("");
     public hoverTheme:BehaviorSubject<string> = new BehaviorSubject("");
     public usernameValue = "";
     public passValue = "";
+
     ngOnInit(): void { 
         this.usernameValid  = this.authService.getLoginStatus();
         this.passwordValid = this.authService.getRegisterStatus();
+        this.primaryTheme = this.themeService.getPrimaryTheme();
         this.hoverTheme = this.themeService.getHoverTheme();
         this.authService.getUsername().subscribe((username)=>{
             this.usernameValue = username;
@@ -40,7 +43,8 @@ import { ThemeService } from "src/app/services/theme.service";
             this.authService.login(userna,pass).subscribe({
                 next: (value)=>{
                     // this.loginForm.reset();
-
+                    this.authService.getLoginStatus().next(true);
+                    this.closeModal();
                 },
                 error: (err)=>{
                     console.error(err)

@@ -13,6 +13,10 @@ type formValue = "username" | "password";
   export class RegisterComponent implements OnInit{
     constructor(private themeService: ThemeService,private authService:AuthService,private formBuilder:FormBuilder){}
     
+    public primaryTheme = this.themeService.getPrimaryTheme();
+    public hoverTheme = this.themeService.getHoverTheme();
+    public accentTheme = this.themeService.getAccentTheme();
+
     public registerForm = this.formBuilder.group({
         username: ["",[
             Validators.minLength(3),
@@ -21,29 +25,56 @@ type formValue = "username" | "password";
         password: ["",[
             Validators.minLength(8),
             Validators.required
+        ]],
+        passwordConfirm: ["",[
+            Validators.minLength(8),
+            Validators.required
         ]]
-    });
+  }, this.passwordMatchValidator);
     
-    get username(){
-        return this.registerForm.get("username")
+    public passwordMatchValidator(g: FormGroup) {
+        return g.get('password')?.value === g.get('passwordConfirm')?.value
+           ? null : {'mismatch': true};
     }
-    get password(){
-        return this.registerForm.get("password")
-    }
-    public hoverTheme = this.themeService.getHoverTheme();
+
+    public usernameValue = "";
+    public passValue = "";
+
+    get loginOnRegister(){  return this.authService.getLoginOnRegister().value }
+    set loginOnRegister(value:boolean){ this.authService.setLoginOnRegister(value) }
+
+    get username(){ return this.registerForm.get("username") }
+    get password(){ return this.registerForm.get("password") }
     
     public ngOnInit(): void {
-        
+        let username = this.authService.getUsername();
+        let password = this.authService.getPassword();
+        combineLatest([username, password]).subscribe(([username,pass])=>{
+          this.usernameValue = username;
+          this.passValue = pass;
+        })
     }
     
     public register(){
-        let userna = this.username?.value
-        let pass = this.password?.value
+        let userna = this.usernameValue
+        let pass = this.passValue
         if (userna && pass) {
-            this.authService.register(userna,pass).subscribe(res=>{
-                this.registerForm.reset();
-                console.log("Register Response: ",res);
-            })
+            this.authService.register(userna,pass).subscribe({
+              next:res=>{
+                console.log("Registration Complete!");
+                console.log(res);
+              },
+              complete:()=>{
+                if (this.loginOnRegister == true) {
+                  this.authService.login(userna, pass).subscribe((val)=>{
+                    if (val) {
+                        console.log("Successful Login!");
+                        console.log(val);
+                    }
+                  }).unsubscribe()
+                }
+              }
+            }).unsubscribe()
         }
     }
 

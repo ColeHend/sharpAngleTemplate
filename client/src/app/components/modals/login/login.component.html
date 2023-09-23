@@ -1,5 +1,5 @@
-<div id="loginModal">
-    <app-loginBoxes >
-        <button mat-button [class]="(hoverTheme | async)" [disabled]="(usernameValid | async) || (passwordValid | async)" (click)="login()" type="submit">Submit</button>
-    </app-loginBoxes>
+<div id="styleBar" [className]="(primaryTheme | async)"></div>
+<div id="loginModal" >
+    <app-loginBoxes id="loginBoxes" > </app-loginBoxes>
 </div>
+<div id="styleBar2" [className]="(primaryTheme | async)"></div>

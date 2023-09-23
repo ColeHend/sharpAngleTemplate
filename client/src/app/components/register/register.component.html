@@ -1,16 +1,23 @@
-<div>
-    <h3>Register</h3>
-    <form method="post" [formGroup]="registerForm" (ngSubmit)="register">
-        <div><input type="text" name="usernameR" id="usernameR" placeholder="username" formControlName="username"></div>
-        <div *ngIf="username?.invalid && (username?.touched || username?.dirty)">
+<div id="registerWrapper" [className]="(accentTheme | async)">
+    <h2  class="registerHeader">Register</h2>
+    <form class="registerForm" method="post" [formGroup]="registerForm" (ngSubmit)="register">
+        <div class="usernameDiv"><input type="text" name="usernameR" id="usernameR" placeholder="username" formControlName="username"></div>
+        <div class="error" *ngIf="username?.invalid && (username?.dirty ||!username?.pristine)">
             Username not long enough
         </div>
 
-        <div><input type="password" name="passwordR" id="passwordR" placeholder="password" formControlName="password" ></div>
-        <div *ngIf="password?.invalid && (password?.touched || password?.dirty)">
+        <div class="passwordDiv"><input type="password" name="passwordR" id="passwordR" placeholder="password*" formControlName="password" ></div>
+        <div class="error" *ngIf="password?.invalid && (password?.touched || password?.dirty)">
+            Password not long enough
+        </div>
+
+        <div class="passwordDiv"><input type="password" name="passwordR" id="passwordRC" placeholder="confirm password*" formControlName="passwordConfirm" ></div>
+        <div class="error" *ngIf="password?.invalid && (password?.touched || password?.dirty)">
             Password not long enough
         </div>
     </form>
-    <!-- [(ngModel)]="user.password" #password="ngModel" -->
-    <button mat-button [class]="(hoverTheme | async)" [disabled]="username?.invalid || password?.invalid" (click)="register()" type="submit">Submit</button>
+    <span id="submitSpan">
+        <mat-checkbox id="loginOnRegister" [checked]="loginOnRegister">Login After Registered?</mat-checkbox>
+        <button mat-button [class]="(hoverTheme | async)" [disabled]="username?.invalid || password?.invalid || registerForm.errors" (click)="register()" type="submit">Submit</button>
+    </span>
 </div>

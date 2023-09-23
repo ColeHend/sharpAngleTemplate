@@ -21,8 +21,25 @@ namespace sharpAngleTemplate.Repositories
             this.httpContextAccessor = httpContextAccessor;
             this.dbContext = dbContext;
         }
-
-        public int GetUserId() => int.Parse(httpContextAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.NameIdentifier));
+        public string? GetUsername(){
+            var username = httpContextAccessor.HttpContext!.User.Identity?.Name;
+            return username != null ? username : null;
+        }
+        public async Task<int?> GetUserId(){
+            int? userId = null;
+            var user = httpContextAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var username = httpContextAccessor.HttpContext.User.Identity?.Name;
+            if (user != null)
+            {
+                userId = int.Parse(user);
+                Console.WriteLine($" \n UserID: {userId}\n ");
+            } else if(username != null)
+            {
+                var userEntity = await GetUser(username);
+                userId = userEntity != null ? userEntity.Id : null;
+            }
+            return userId;
+        }
 
         public async Task<string[]?> GetRoles(string username)
         {
@@ -32,7 +49,7 @@ namespace sharpAngleTemplate.Repositories
 
         public async Task<string[]?> GetRoles(int id)
         {
-            var user = await this.GetUser(id);
+            var user = await this.GetUserId(id);
             return user?.userType;
         }
         public async Task<List<User>> GetAllUsers()
@@ -52,7 +69,7 @@ namespace sharpAngleTemplate.Repositories
             }
         }
 
-        public async Task<User?> GetUser(int id)
+        public async Task<User?> GetUserId(int id)
         {
             var userDb = dbContext.Users;
             var usernameDomain = await userDb.FirstOrDefaultAsync(u=>u.Id==id);
