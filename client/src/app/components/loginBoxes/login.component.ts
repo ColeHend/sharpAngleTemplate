@@ -39,13 +39,15 @@ import { ThemeService } from "src/app/services/theme.service";
         if (userna && pass) {
             this.authService.login(userna,pass).subscribe({
                 next: (value)=>{
+                    console.log(value);
+                    
                     this.loginForm.reset();
-
+                
                 },
                 error: (err)=>{
                     console.error(err)
                 }
-            });
+            }).unsubscribe();
         }
     }
   }

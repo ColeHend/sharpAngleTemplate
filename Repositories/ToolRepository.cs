@@ -12,12 +12,13 @@ namespace sharpAngleTemplate.Repositories
         public static string SendAsJson(this Object dataToSend,string keyName = "data")
         {
             var token = JsonConvert.SerializeObject(dataToSend);
-            var opening = "{";
-            var key = $"\"{keyName}:";
-            var theData = $" \"{token}\"";
-            var closing = "}";
-            
-            return opening + key + theData + closing;
+            var jsonString = $"{{ \"{keyName}\": {token} }}";
+    
+            return jsonString;
+        }
+        public static T DeepCopy<T>(this T tocopy)
+        { 
+            return JsonConvert.DeserializeObject<T>(JsonConvert.SerializeObject(tocopy))!;
         }
     }
 }

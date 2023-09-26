@@ -22,11 +22,25 @@ import { RegisterComponent } from './components/register/register.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { LoginModal } from './components/modals/login/login.component';
 import { RegisterModal } from './components/modals/register/register.component';
+import { HomeSecureComponent } from './components/home/secure/secure.component';
+import { HomeJsonComponent } from './components/home/json/json.component';
 
 
 const routes: Routes = [
   {
     path:'',
+    component: HomeComponent,
+  },
+  {
+    path:'json',
+    component: HomeJsonComponent,
+  },
+  {
+    path: 'secure',
+    component: HomeSecureComponent
+  },
+  {
+    path: '**',
     component: HomeComponent
   } 
 ];
@@ -35,16 +49,17 @@ const routes: Routes = [
     AppComponent,
     NavbarComponent,
     MatNavComponent,
-    HomeComponent,
     BodyBaseComponent,
+    HomeComponent,
     LoginComponent,
     RegisterComponent,
     LoginModal,
-    RegisterModal
+    RegisterModal,
+    HomeSecureComponent,
+    HomeJsonComponent
   ],
   imports: [
     BrowserModule,
-    RouterModule,
     RouterModule.forRoot(routes),
     NoopAnimationsModule,
     MaterialModule,

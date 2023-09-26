@@ -38,13 +38,13 @@ namespace sharpAngleTemplate.Controllers
         }
 
         [HttpPost]
-        [Valid]
         public async Task<IActionResult> Register([FromBody] UserRegisterReq user)
         {
             var userDb = dbContext.Users;
             var userDomain = await userDb.FirstOrDefaultAsync(u=>u.Username==user.Username);
             if (userDomain != null)
             {
+                Console.WriteLine("\n Bad Request! \n");
                 return BadRequest("User already Exists");
             }
 
@@ -62,25 +62,23 @@ namespace sharpAngleTemplate.Controllers
             };
             userDb.Add(newUser);
 
-
+            Console.WriteLine("\n Ok! \n");
             await dbContext.SaveChangesAsync();
             return Ok();
         }
 
         [HttpPost]
-        [Valid]
         public async Task<IActionResult> Login([FromBody] UserLoginReq user)
         {
             // Check if user exists
-            Console.WriteLine(" ");
-            Console.WriteLine($"Login Request: {JsonConvert.SerializeObject(user)} ");
-            Console.WriteLine(" ");
+            Console.WriteLine($"\nLogin Request: {JsonConvert.SerializeObject(user)} \n");
             var userEntity = await userRepository.GetUser(user.Username);
             if (userEntity != null)
             {
                 // Check if password is correct
                 if (userRepository.VerifyPasswordHash(user.Password, userEntity.PasswordHash, userEntity.PasswordSalt))
                 {
+                    Console.WriteLine("\nPassword Verified!\n");
                     var rollin = new List<string>();
                     string[] backup = {"Guest"};
                     string[] rolesEntity = userEntity.userType != null && userEntity.userType.Count() > 0 ? userEntity.userType : backup;
@@ -94,15 +92,18 @@ namespace sharpAngleTemplate.Controllers
                         if (string.IsNullOrEmpty(token) == false)
                         {
                             
-                            return token.SendAsJson();
+                            return token;
                         }
                         return string.Empty;
                     };
-                        return Ok(BuildTokenJson(token).SendAsJson());
+                    var tokenJSON = BuildTokenJson(token).SendAsJson();
+                    Console.WriteLine($"\n Ok! sending: {tokenJSON} \n");
+                    return Ok(tokenJSON);
                         // return new ContentResult() { Content = token, StatusCode = 200 };
                 }
+                Console.WriteLine("\nPassword Verification Failed!\n ");
             }
-
+            Console.WriteLine("\n Bad Request! \n");
             // Info is wrong
             return BadRequest("Incorrect Username or Password");
         }
@@ -136,8 +137,9 @@ namespace sharpAngleTemplate.Controllers
 
                         if (userEntity != null)
                         {
-                            Console.WriteLine("-\nOk sent!\n-");
-                            return Ok(UserMapper.MapUser(userEntity));
+                            var userDomainJson = UserMapper.MapUser(userEntity).SendAsJson();
+                            Console.WriteLine($"-\nOk sent! sending: {userDomainJson}\n-");
+                            return Ok(userDomainJson);
                         }
                     }
                 }
@@ -165,7 +167,6 @@ namespace sharpAngleTemplate.Controllers
         }
 
         [HttpPut]
-        [Valid]
         [Authorize(Roles = "Guest;User;Admin")]
         public async Task<IActionResult> Update([FromBody] UserUpdateReq user)
         {
@@ -202,7 +203,6 @@ namespace sharpAngleTemplate.Controllers
         }
 
         [HttpDelete]
-        [Valid]
         [Authorize(Roles = "User;Admin")]
         public async Task<IActionResult> Delete([FromBody] DeleteUserReq user)
         {

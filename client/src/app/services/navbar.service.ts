@@ -75,12 +75,7 @@ export class NavbarService {
         return this.secondTabs
     }
     setTabs(tabs:Tab, ...rest:Tab[]){
-        let tabNames = [tabs.name, ...rest.map(val=>val.name)];
-        let tabContent = [tabs.component,...rest.map(val=>val.component)];
-
-        if (tabNames.length === tabContent.length && !tabContent.includes(null) && !tabContent.includes(undefined)) {
-            this.secondTabs.next([tabs, ...rest])
-        }
+        this.secondTabs.next([tabs, ...rest])
     }
     getShowTabStatus(){
         return this.showTabsBool

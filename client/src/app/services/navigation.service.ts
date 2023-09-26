@@ -9,10 +9,13 @@ import { ComponentType } from '@angular/cdk/portal';
 import { LoginModal } from '../components/modals/login/login.component';
 import { RegisterModal } from '../components/modals/register/register.component';
 import { AuthService } from './authorize.service';
+import { HomeJsonComponent } from '../components/home/json/json.component';
+import { HomeSecureComponent } from '../components/home/secure/secure.component';
+import { Router } from '@angular/router';
 
 @Injectable({providedIn:'root'})
 export class NavigationService {
-    constructor(private navbarService: NavbarService, private themeService:ThemeService,public dialog: MatDialog, private authService:AuthService){}
+    constructor(private router:Router,private navbarService: NavbarService, private themeService:ThemeService,public dialog: MatDialog, private authService:AuthService){}
     private themeBool = new BehaviorSubject<boolean>(false);
     private RegisterMenuObject = {
         name:"Register",
@@ -42,7 +45,7 @@ export class NavigationService {
             {
                 name:'Homebar',
                 callback:()=>{
-                    this.showHomeBar();
+                    // this.showHomeBar();
                 }, 
                 tooltip:"Show Home Navbar"
             },
@@ -72,7 +75,7 @@ export class NavigationService {
             {
                 name:'Homebar',
                 callback:()=>{
-                    this.showHomeBar();
+                    // this.showHomeBar();
                 }, 
                 tooltip:"Show Home Navbar"
             },
@@ -105,13 +108,13 @@ export class NavigationService {
         this.hideAll();
         this.navbarService.showSecondRow()
         // Text at start of Bar
-        this.navbarService.showText();
-        this.navbarService.setSecondText('Hello Second Bar')
+        // this.navbarService.showText();
+        this.navbarService.setSecondText('Hello Home Bar')
         // Tabs after the Text
         this.navbarService.showTabs()
-        this.navbarService.setTabs({name:"Tab 1",component: EmptyComponent}, {name:"Tab 2",component: EmptyComponent})
+        this.navbarService.setTabs({name:"Json Testing",link:["json"]}, { name:"Security",link:["/secure"]})
         // Icons on the right of the bar
-        this.navbarService.setSecondIcons({iconName:"home",callback:()=>{},tooltip:'Home Screen'})
+        this.navbarService.setSecondIcons({iconName:"home",link:[""],tooltip:'Home Screen'})
     }
 }
 export interface DialogData {

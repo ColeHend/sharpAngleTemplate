@@ -2,6 +2,7 @@
 
 export interface Tab {
     name: string;
-    component: any;
+    component?: any;
     callback?: Function
+    link?:Array<string | object>;
 }

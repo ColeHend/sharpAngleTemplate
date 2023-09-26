@@ -37,8 +37,8 @@ type formValue = "username" | "password";
            ? null : {'mismatch': true};
     }
 
-    public usernameValue = "";
-    public passValue = "";
+    public usernameValue = this.authService.getUsername();
+    public passValue = this.authService.getPassword();
 
     get loginOnRegister(){  return this.authService.getLoginOnRegister().value }
     set loginOnRegister(value:boolean){ this.authService.setLoginOnRegister(value) }
@@ -47,12 +47,6 @@ type formValue = "username" | "password";
     get password(){ return this.registerForm.get("password") }
     
     public ngOnInit(): void {
-        let username = this.authService.getUsername();
-        let password = this.authService.getPassword();
-        combineLatest([username, password]).subscribe(([username,pass])=>{
-          this.usernameValue = username;
-          this.passValue = pass;
-        })
     }
     
     public register(){

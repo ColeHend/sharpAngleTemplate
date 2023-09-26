@@ -25,19 +25,26 @@ namespace sharpAngleTemplate.Repositories
             var username = httpContextAccessor.HttpContext!.User.Identity?.Name;
             return username != null ? username : null;
         }
-        public async Task<int?> GetUserId(){
+        public async Task<int?> GetUserId()
+        {
             int? userId = null;
-            var user = httpContextAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var username = httpContextAccessor.HttpContext.User.Identity?.Name;
+            var user = httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var username = httpContextAccessor.HttpContext?.User.Identity?.Name;
             if (user != null)
             {
                 userId = int.Parse(user);
                 Console.WriteLine($" \n UserID: {userId}\n ");
-            } else if(username != null)
+            }
+            else if (username != null)
             {
                 var userEntity = await GetUser(username);
-                userId = userEntity != null ? userEntity.Id : null;
+                userId = userEntity?.Id;
+                Console.WriteLine($" \n UsernameID: {userId}\n ");
+            }else
+            {
+                Console.WriteLine("Failed!");
             }
+            
             return userId;
         }
 

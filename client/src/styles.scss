@@ -85,6 +85,7 @@ $textColor: #f6f7f7;
 .lightTheme-accent {
   background-color: #2196F3;
   color: $textColor;
+  border: 1px solid #fff;
   @include trigger();
 }
 .lightTheme-hover {

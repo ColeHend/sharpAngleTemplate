@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, share, shareReplay, tap } from 'rxjs';
 type themes = 'darkTheme' | 'lightTheme'
 @Injectable({providedIn:'root'})
 export class ThemeService {
@@ -10,21 +10,19 @@ export class ThemeService {
     private hoverTheme = new BehaviorSubject<string>(`${this.currentTheme.value}-hover`);
     private buttonTheme = new BehaviorSubject<string>(`${this.currentTheme.value}-button`);
 
-    public getPrimaryTheme(){
-        return this.primaryTheme
-    }
 
-    public getAccentTheme(){
-        return this.accentTheme
-    }
+    public getPrimaryTheme(){  return this.primaryTheme.asObservable().pipe(shareReplay(1))}
+    public getCustomPrimaryTheme(className:string){return this.getPrimaryTheme().pipe(tap((t)=>t+` ${className}`))}
 
-    public getHoverTheme(){
-        return this.hoverTheme
-    }
+    public getAccentTheme(){ return this.accentTheme.asObservable().pipe(shareReplay(1)) }
+    public getCustomAccentTheme(className:string){return this.getAccentTheme().pipe(tap((t)=>t+` ${className}`))}
 
-    public getButtonTheme(){
-        return this.buttonTheme
-    }
+    public getHoverTheme(){ return this.hoverTheme.asObservable().pipe(shareReplay(1)) }
+    public getCustomHoverTheme(className:string){return this.getHoverTheme().pipe(tap((t)=>t+` ${className}`))}
+
+    public getButtonTheme(){ return this.buttonTheme.asObservable().pipe(shareReplay(1)) }
+    public getCustomButtonTheme(className:string){return this.getButtonTheme().pipe(tap((t)=>t+` ${className}`))}
+
 
     public changeTheme(theme:themes){
         this.currentTheme.next(theme)

@@ -9,9 +9,12 @@
   width: min-content;
 }
 #menu{
+  border: 1px solid #fff;
+  border-radius: 10px;
+  overflow: ellipsis;
   display: flex;
   flex-direction: column;
-  width: 100%;
+  width: 95%;
   align-items: center;
   * {
     :not(mat-divider) {

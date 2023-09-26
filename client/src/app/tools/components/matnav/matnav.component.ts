@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { BehaviorSubject , combineLatest} from 'rxjs';
+import { BehaviorSubject , Observable, combineLatest} from 'rxjs';
 import { ToolIcon } from 'src/app/models/tool-icon.model';
 import { NavbarService } from 'src/app/services/navbar.service';
 import { MenuItem } from 'src/app/models/menu-item.model';
@@ -20,9 +20,9 @@ export class MatNavComponent implements OnInit {
     public tabIndex?:BehaviorSubject<number>;
     public tabs?:BehaviorSubject<Tab[]>;
     public showTabs?:BehaviorSubject<boolean>;
-    public primaryTheme?:BehaviorSubject<string>;
-    public accentTheme?:BehaviorSubject<string>;
-    public hoverTheme?:BehaviorSubject<string>;
+    public primaryTheme?:Observable<string>;
+    public accentTheme?:Observable<string>;
+    public hoverTheme?:Observable<string>;
     public primaryHover:string = '';
     public accentHover:string = '';
 
@@ -47,12 +47,14 @@ export class MatNavComponent implements OnInit {
           this.primaryHover = `${primaryTheme} ${hoverTheme}`
         })
         combineLatest([this.accentTheme,this.hoverTheme]).subscribe(([accentTheme, hoverTheme])=>{
-          this.accentHover = `${accentTheme} ${hoverTheme}`
+          this.accentHover = `${accentTheme} ${hoverTheme} NavTabs`
         })
         
         this.themeService.changeTheme('darkTheme')
     }
-
+    public getTabColor(link:Array<string | object>){
+      return window.location.pathname.includes(link.filter(x=>typeof x !== 'object').join(' ')) ? {color:'white'} : {color:'silver'}
+    }
     public setTabIndex(num:number){
       this.navService.setTabIndex(num);
     }

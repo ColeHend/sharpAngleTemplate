@@ -10,31 +10,31 @@
 
     <mat-toolbar-row [class]="accentTheme | async" *ngIf="showSecondRow | async">
         <span *ngIf="showText | async">{{secondText | async}}</span>
-        <mat-tab-group [class]="accentTheme | async" *ngIf="showTabs | async" [selectedIndex]="tabIndex | async" (selectedIndexChange)="setTabIndex($event)">
-            <mat-tab class="color" *ngFor="let tab of tabs | async" (click)="validCallback(tab.callback)" [class]="accentHover" [label]="tab.name"></mat-tab>
-        </mat-tab-group>
+        <a *ngFor="let tab of tabs | async"  > 
+            <button mat-button class="color" [routerLink]="tab.link" [style]="getTabColor(tab.link ?? [])" (click)="validCallback(tab.callback)" [class]="accentHover">{{tab.name}}</button>
+        </a>
         <span class="example-spacer"></span>
 
-        <button mat-icon-button *ngFor="let theIcon of secondIcons | async" [matTooltip]="theIcon.tooltip ?? ''" (click)="theIcon.callback"
+        <button mat-icon-button *ngFor="let theIcon of secondIcons | async" [routerLink]="theIcon.link"  [matTooltip]="theIcon.tooltip ?? ''" (click)="theIcon.callback"
             class="example-icon favorite-icon" aria-label="icon-button with icon">
             <mat-icon >{{theIcon.iconName}}</mat-icon>
         </button>
     </mat-toolbar-row>
 </mat-toolbar>
-<mat-menu [class]="(primaryTheme | async) ?? ''" #menu="matMenu">
+<mat-menu [class]="(primaryTheme | async) ?? ''" id="NavMenu" #menu="matMenu">
     <div id="menu">
         <div *ngFor="let item of (menuItems | async);index as i"  [class]="primaryHover">
             <mat-divider *ngIf="i == 0"></mat-divider>
-            <button mat-menu-item  [matTooltip]="item.tooltip ?? ''" matTooltipPosition="left"  (click)="validCallback(item.callback)">{{item.name}}</button>
+            <button mat-menu-item [routerLink]="item.link"  [matTooltip]="item.tooltip ?? ''" matTooltipPosition="left"  (click)="validCallback(item.callback)">{{item.name}}</button>
             <mat-divider></mat-divider>
         </div>
     </div>
 </mat-menu>
-<ng-container *ngIf="showTabs | async">
+<!-- <ng-container *ngIf="showTabs | async">
     <ng-container *ngFor="let type of tabs | async; index as i">
         <ng-container *ngIf="i === (tabIndex | async)">
             <ng-container *ngComponentOutlet="type.component"></ng-container>
         </ng-container>
     </ng-container>
-</ng-container>
+</ng-container> -->
 <ng-content></ng-content>
