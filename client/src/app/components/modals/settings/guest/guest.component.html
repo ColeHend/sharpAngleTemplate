@@ -1,0 +1,29 @@
+<div id="baseSettings">
+    <div class="border" id="theme">
+        <h4>Change Theme</h4>
+        <label for="themeControl">Theme </label>
+        <div name="themeControl" >
+            <mat-select [panelClass]="(accentTheme | async) ?? ''" [formControl]="themeControl">
+                <mat-option *ngFor="let theme of allThemes" [value]="theme">
+                  {{getDisplayName(theme)}}
+                </mat-option>
+            </mat-select> 
+        </div>
+    </div>
+    <div class="border"  id="changeUserInfo">
+        <div id="verify">
+            <h4>Change Username or Password</h4>
+            <div>
+                <label for="username">Username </label>
+                <input name="username" placeholder="username" type="text" />
+            </div>
+            <div>
+                <label for="password">Password </label>
+                <input name="password" placeholder="password" type="text" />
+            </div>
+        </div>
+        <div id="verified">
+
+        </div>
+    </div>
+</div>

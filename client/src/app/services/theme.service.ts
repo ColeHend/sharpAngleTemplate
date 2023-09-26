@@ -1,15 +1,17 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, share, shareReplay, tap } from 'rxjs';
-type themes = 'darkTheme' | 'lightTheme'
+export type themes = 'darkTheme' | 'lightTheme'
 @Injectable({providedIn:'root'})
 export class ThemeService {
     constructor(){}
+    public readonly allThemes = ['darkTheme', 'lightTheme'];
     private currentTheme = new BehaviorSubject<themes>('lightTheme')
     private primaryTheme = new BehaviorSubject<string>(`${this.currentTheme.value}-primary`);
     private accentTheme = new BehaviorSubject<string>(`${this.currentTheme.value}-accent`);
     private hoverTheme = new BehaviorSubject<string>(`${this.currentTheme.value}-hover`);
     private buttonTheme = new BehaviorSubject<string>(`${this.currentTheme.value}-button`);
 
+    public getTheme(){return this.currentTheme.getValue()}
 
     public getPrimaryTheme(){  return this.primaryTheme.asObservable().pipe(shareReplay(1))}
     public getCustomPrimaryTheme(className:string){return this.getPrimaryTheme().pipe(tap((t)=>t+` ${className}`))}

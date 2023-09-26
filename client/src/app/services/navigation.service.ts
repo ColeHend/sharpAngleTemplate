@@ -12,12 +12,14 @@ import { AuthService } from './authorize.service';
 import { HomeJsonComponent } from '../components/home/json/json.component';
 import { HomeSecureComponent } from '../components/home/secure/secure.component';
 import { Router } from '@angular/router';
+import { MenuItem } from '../models/menu-item.model';
+import { SettingsComponent } from '../components/modals/settings/settings.component';
 
 @Injectable({providedIn:'root'})
 export class NavigationService {
     constructor(private router:Router,private navbarService: NavbarService, private themeService:ThemeService,public dialog: MatDialog, private authService:AuthService){}
     private themeBool = new BehaviorSubject<boolean>(false);
-    private RegisterMenuObject = {
+    private RegisterMenuObject:MenuItem = {
         name:"Register",
         callback: ()=>{
             this.showModal(RegisterModal, {
@@ -28,7 +30,7 @@ export class NavigationService {
             })
         }
     };
-    private LoginMenuObject = {
+    private LoginMenuObject:MenuItem = {
         name:"Login",
         callback: ()=>{
             this.showModal(LoginModal, {
@@ -40,9 +42,20 @@ export class NavigationService {
             })
         }
     }
+    private UserSettings:MenuItem = {
+        name:"Settings",
+        callback: ()=>{
+            this.showModal(SettingsComponent, {
+                height: "40vh",
+                width: "30vw"
+            }).afterClosed().subscribe((value)=>{
+                
+            })
+        }
+    }
     public setLoggedInMenu(){
         this.navbarService.setMenuItems(
-            {
+            this.UserSettings, {
                 name:'Homebar',
                 callback:()=>{
                     // this.showHomeBar();

@@ -68,10 +68,11 @@ namespace sharpAngleTemplate.Controllers
         }
 
         [HttpPost]
+        [Valid]
         public async Task<IActionResult> Login([FromBody] UserLoginReq user)
         {
             // Check if user exists
-            Console.WriteLine($"\nLogin Request: {JsonConvert.SerializeObject(user)} \n");
+            Console.WriteLine($"\nLogin Request: {user.Stringify()} \n");
             var userEntity = await userRepository.GetUser(user.Username);
             if (userEntity != null)
             {
@@ -105,7 +106,7 @@ namespace sharpAngleTemplate.Controllers
             }
             Console.WriteLine("\n Bad Request! \n");
             // Info is wrong
-            return BadRequest("Incorrect Username or Password");
+            return BadRequest("Incorrect Username or Password".SendAsJson());
         }
 
         [HttpPost]
@@ -126,7 +127,7 @@ namespace sharpAngleTemplate.Controllers
 
                 if (userToSend != null)
                 {
-                    return Ok(UserMapper.MapUser(userToSend));
+                    return Ok(UserMapper.MapUser(userToSend).SendAsJson());
                 } else
                 {
                     var username = userRepository.GetUsername();
@@ -144,7 +145,7 @@ namespace sharpAngleTemplate.Controllers
                     }
                 }
                 Console.WriteLine("-\nBadRequest sent!\n-");
-                return BadRequest("No user was found!");
+                return BadRequest("No user was found!".SendAsJson());
             } else {
                 Console.WriteLine("-\nUnauthorized sent!\n-");
                 return Unauthorized();

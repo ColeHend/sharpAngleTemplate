@@ -1,0 +1,19 @@
+<div class="max"  [className]="primaryTheme | async" id="settingsContainer">
+    <mat-tab-group class="max">
+        <mat-tab class="max" label="Settings">
+            <div class="max" style="height: max-content;"  id="guestSettings" [className]="accentTheme | async">
+                <app-guestSettings class="max" ></app-guestSettings>
+            </div>
+        </mat-tab>
+        <mat-tab class="max"  label="User Settings">
+            <div class="max" style="height: max-content;"  id="guestSettings" [className]="accentTheme | async">
+                <app-userSettings class="max" ></app-userSettings>
+            </div>
+        </mat-tab>
+        <mat-tab class="max"  label="Admin Settings">
+            <div class="max" style="height: max-content;"  id="guestSettings" [className]="accentTheme | async">
+                <app-adminSettings class="max" ></app-adminSettings>
+            </div>
+        </mat-tab >
+    </mat-tab-group>
+</div>

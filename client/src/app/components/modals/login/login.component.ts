@@ -31,20 +31,4 @@ import { ThemeService } from "src/app/services/theme.service";
     public closeModal(){
         this.dialogRef.close()
     }
-    public login(){
-        let userna = this.usernameValue;
-        let pass = this.passValue;
-        if (userna && pass) {
-            this.authService.login(userna,pass).subscribe({
-                next: (value)=>{
-                    // this.loginForm.reset();
-                    this.authService.getLoginStatus().next(true);
-                    this.closeModal();
-                },
-                error: (err)=>{
-                    console.error(err)
-                }
-            });
-        }
-    }
   }

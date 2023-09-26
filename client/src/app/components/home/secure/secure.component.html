@@ -2,7 +2,7 @@
     <div>
         <h1>Security Testing</h1>
         <div *ngIf="(isLoggedIn | async)">
-           Hello logged in user named! {{username}}
+           Hello logged in user named! {{username | async}}
         </div>
         <div *ngIf="!(isLoggedIn | async)">
             Hello not logged in user!

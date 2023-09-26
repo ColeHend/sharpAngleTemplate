@@ -3,6 +3,8 @@ using sharpAngleTemplate.models;
 using Newtonsoft.Json;
 using Microsoft.OpenApi.Any;
 using sharpAngleTemplate.tools;
+using sharpAngleTemplate.Repositories;
+using sharpAngleTemplate.CustomActionFilters;
 
 namespace sharpAngleTemplate.Controllers
 {
@@ -18,7 +20,7 @@ namespace sharpAngleTemplate.Controllers
         // ---------------- Endpoints ------------------
         [HttpPost]
         public IActionResult GetCollection([FromBody] GetCollectionReq request){
-            Console.WriteLine("GetCollection: ",request);
+            Console.WriteLine("GetCollection: ",request.Stringify());
             var CollectionName = request.CollectionName;
             var collection = _db.GetCollectionFromDB(CollectionName);
             if (collection != null)
@@ -32,7 +34,7 @@ namespace sharpAngleTemplate.Controllers
         [HttpPost]
         public IActionResult CreateCollection([FromBody] CreateCollectionReq request)
         {
-            Console.WriteLine("CreateCollection",request);
+            Console.WriteLine("CreateCollection",request.Stringify());
 
             var CollectionName = request.CollectionName;
             var Data = request.Data;
@@ -64,7 +66,7 @@ namespace sharpAngleTemplate.Controllers
         [HttpPost]
         public IActionResult AddData([FromBody] AddDataReq request)
         {
-            Console.WriteLine("AddData",request);
+            Console.WriteLine("AddData",request.Stringify());
             var CollectionName = request.CollectionName;
             var Data = request.Data;
 
@@ -80,7 +82,7 @@ namespace sharpAngleTemplate.Controllers
         [HttpPost]
         public IActionResult AddMassData([FromBody] AddMassDataReq request)
         {
-            Console.WriteLine("AddMassData",request);
+            Console.WriteLine("AddMassData",request.Stringify());
             var CollectionName = request.CollectionName;
             var Data = request.Data;
 

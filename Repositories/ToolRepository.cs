@@ -20,5 +20,15 @@ namespace sharpAngleTemplate.Repositories
         { 
             return JsonConvert.DeserializeObject<T>(JsonConvert.SerializeObject(tocopy))!;
         }
+
+        public static string Stringify(this object toString)
+        {
+            return JsonConvert.SerializeObject(toString);
+        }
+
+        public static T? Parse<T>(this string toObject)
+        {
+            return JsonConvert.DeserializeObject<T>(toObject);
+        }
     }
 }

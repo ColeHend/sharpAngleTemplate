@@ -14,12 +14,16 @@ export class TokenInterceptor implements HttpInterceptor {
     let protocall = window.location.protocol;
     let host = window.location.host;
 
-    request = request.clone({
-      setHeaders: {
-        Authorization: `bearer ${this.auth.getToken()}`
-
-      }
-    });
+    let token = this.auth.getToken();
+    if (token && token.length > 5) {
+      request = request.clone({
+        setHeaders: {
+          Authorization: `bearer ${this.auth.getToken()}`
+  
+        }
+      });
+    }
+    
     return next.handle(request);
   }
 }

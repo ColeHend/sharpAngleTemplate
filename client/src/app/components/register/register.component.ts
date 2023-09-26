@@ -50,7 +50,7 @@ type formValue = "username" | "password";
     }
     
     public register(){
-        let userna = this.usernameValue
+        let userna = this.usernameValue.getValue()
         let pass = this.passValue
         if (userna && pass) {
             this.authService.register(userna,pass).subscribe({

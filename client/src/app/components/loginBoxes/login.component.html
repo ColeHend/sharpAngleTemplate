@@ -1,6 +1,6 @@
 <div id="loginWrapper" [className]="(accentTheme | async)">
   <h2 class="loginHeader">Login</h2>
-  <form class="loginForm" method="post" [formGroup]="loginForm" (ngSubmit)="loginForm.reset()" >
+  <form class="loginForm" method="post" [formGroup]="loginForm" (ngSubmit)="login()" >
     <div class="usernameDiv" >
       <input 
         type="text"
@@ -26,6 +26,6 @@
       Password not long enough
     </div>
 
-    <button mat-button [class]="(hoverTheme | async)" [disabled]="password?.invalid || username?.invalid" (click)="login()" type="submit">Submit</button>
+    <button mat-button [class]="(hoverTheme | async)" [disabled]="password?.invalid || username?.invalid" type="submit">Submit</button>
   </form>
 </div>

@@ -24,6 +24,10 @@ import { LoginModal } from './components/modals/login/login.component';
 import { RegisterModal } from './components/modals/register/register.component';
 import { HomeSecureComponent } from './components/home/secure/secure.component';
 import { HomeJsonComponent } from './components/home/json/json.component';
+import { SettingsComponent } from './components/modals/settings/settings.component';
+import { AdminSettingsComponent } from './components/modals/settings/admin/admin.component';
+import { GuestSettingsComponent } from './components/modals/settings/guest/guest.component';
+import { UserSettingsComponent } from './components/modals/settings/user/user.component';
 
 
 const routes: Routes = [
@@ -56,7 +60,11 @@ const routes: Routes = [
     LoginModal,
     RegisterModal,
     HomeSecureComponent,
-    HomeJsonComponent
+    HomeJsonComponent,
+    SettingsComponent,
+    AdminSettingsComponent,
+    GuestSettingsComponent,
+    UserSettingsComponent
   ],
   imports: [
     BrowserModule,

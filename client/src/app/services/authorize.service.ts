@@ -2,16 +2,10 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, catchError, map, Observable, of, throwError } from 'rxjs';
 import { RegisterReq } from '../models/requests/register.model';
-import { switchMap, tap } from 'rxjs/operators';
+import { switchMap, tap, timeout } from 'rxjs/operators';
+import { UserResponse } from '../models/responses/userResponse.model';
 
-interface UserResponse {
-    id: number | null;
-    username: string;
-    moreData: string;
-    password: string | null;
-    passHash: string | null;
-    passSalt: string | null;
-}
+
 
 @Injectable({ providedIn: 'root' })
 /**
@@ -47,7 +41,7 @@ export class AuthService {
      * Gets the username from the username BehaviorSubject.
      * @returns The username from the username BehaviorSubject.
      */
-    public getUsername = () => this.username.getValue();
+    public getUsername = () => this.username;
 
     /**
      * Sets the username in the username BehaviorSubject.
@@ -191,13 +185,17 @@ export class AuthService {
      * @returns An Observable that emits a boolean indicating if the user is logged in.
      */
     public isLoggedIn(): Observable<boolean> {
+        this.alertLog.subscribe((value)=>{
+            console.log(value);
+        })
         this.logger('Running Is Logged in!');
 
-        return this.http.post<UserResponse>('/api/Users/Verify', {}).pipe(
-            tap((value) => {
+        return this.http.post<{data: UserResponse}>('/api/Users/Verify', {}).pipe(
+            tap(({data}) => {
                 this.setLoggedInValue(true);
-                if (value && value.username) {
-                    this.setUsername(value.username);
+                console.log(data);
+                if (data && data.Username) {                 
+                    this.setUsername(data.Username);
                     this.setLoggedInValue(true);
                 }
             }),
@@ -224,6 +222,7 @@ export class AuthService {
      * @returns An Observable that emits the response from the server.
      */
     public register(username: string, password: string, moreData: string = ''): Observable<any> {
+
         return this.http.post('/api/Users/Register', {
             username,
             password,
@@ -235,7 +234,7 @@ export class AuthService {
             })
         );
     }
-
+    public alertLog = new BehaviorSubject("");
     /**
      * Makes a call to the server to login an existing user.
      * @param username - The username of the user to be logged in.
@@ -243,26 +242,15 @@ export class AuthService {
      * @returns An Observable that emits the response from the server.
      */
     public login(username: string, password: string): Observable<any> {
-        let req: RegisterReq = {
-            username,
-            password,
-        };
-        return this.http.post<{ data?: string }>('/api/Users/Login', req).pipe(
-            switchMap((value) => {
-                console.log('logValue: ', value);
-                this.logger(`loggerValue: ${value}`);
-                this.setLoggedInValue(true);
-                if (value.data) {
-                    this.setToken(value.data);
-                    return of(value);
-                } else {
-                    return of(false);
-                }
-            }),
-            catchError((err) => {
-                return throwError(() => err);
-            })
-        );
+        return this.http.post<{ data: string }>('/api/Users/Login', {
+            "Username": username,
+            "Password": password,
+        }).pipe(tap((value)=>{
+            console.log(value);
+            this.alertLog.next(`${value}`)
+            this.setToken(value.data);
+            localStorage.setItem('token', value.data)
+    }));
     }
 
     /**

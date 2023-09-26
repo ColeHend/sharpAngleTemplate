@@ -1,5 +1,6 @@
-import { AfterViewInit, Component, OnInit } from "@angular/core";
+import { AfterViewInit, Component, OnDestroy, OnInit } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
+import { Subscription } from "rxjs";
 import { AuthService } from 'src/app/services/authorize.service';
 import { ThemeService } from "src/app/services/theme.service";
 
@@ -8,8 +9,12 @@ import { ThemeService } from "src/app/services/theme.service";
     templateUrl: './login.component.html',
     styleUrls: ['./login.component.scss']
   })
-  export class LoginComponent {
+  export class LoginComponent implements OnDestroy {
+      public subs = new Subscription();
       constructor(private themeService: ThemeService,private authService:AuthService,private formBuilder:FormBuilder){}
+      public ngOnDestroy(): void {
+            this.subs.unsubscribe()
+        }
       
       public primaryTheme = this.themeService.getPrimaryTheme();
       public hoverTheme = this.themeService.getHoverTheme();
@@ -37,17 +42,16 @@ import { ThemeService } from "src/app/services/theme.service";
         let userna = this.username?.value
         let pass = this.password?.value
         if (userna && pass) {
-            this.authService.login(userna,pass).subscribe({
+            this.subs.add(this.authService.login(userna,pass).subscribe({
                 next: (value)=>{
-                    console.log(value);
-                    
+                    this.authService.alertLog.next(`Login: ${value}`);
                     this.loginForm.reset();
                 
                 },
                 error: (err)=>{
                     console.error(err)
                 }
-            }).unsubscribe();
+            }));
         }
     }
   }

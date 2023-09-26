@@ -27,7 +27,10 @@ builder.Services.AddTransient<ITokenRepository, TokenRepository>();
 var location = "localDefault";
 // var location = "work";
 var connString = builder.Configuration.GetConnectionString(location);
-builder.Services.AddDbContext<SharpAngleContext>(options=>options.UseSqlServer(connString));
+builder.Services.AddDbContext<SharpAngleContext>(options=>{
+    options.EnableDetailedErrors(true);
+    options.UseSqlServer(connString);
+});
 
 builder.Services.Configure<IdentityOptions>(options =>
 {
@@ -44,7 +47,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         ValidateIssuer = false,
         ValidateAudience = false,
         ValidateLifetime = true,
-        ValidateIssuerSigningKey= true,
+        ValidateIssuerSigningKey= false,
         ValidIssuer = builder.Configuration["Jwt:Issuer"],
         ValidAudience = builder.Configuration["Jwt:Audience"],
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
