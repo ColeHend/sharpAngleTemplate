@@ -1,6 +1,6 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
-import { BehaviorSubject, combineLatest } from "rxjs";
+import { BehaviorSubject, Subscription, combineLatest } from "rxjs";
 import { AuthService } from 'src/app/services/authorize.service';
 import { ThemeService } from "src/app/services/theme.service";
 
@@ -10,9 +10,12 @@ type formValue = "username" | "password";
     templateUrl: './register.component.html',
     styleUrls: ['./register.component.scss']
 })
-  export class RegisterComponent implements OnInit{
+  export class RegisterComponent implements OnInit, OnDestroy{
     constructor(private themeService: ThemeService,private authService:AuthService,private formBuilder:FormBuilder){}
-    
+    public ngOnDestroy(): void {
+      this.subs.unsubscribe()
+    }
+    private subs = new Subscription();
     public primaryTheme = this.themeService.getPrimaryTheme();
     public hoverTheme = this.themeService.getHoverTheme();
     public accentTheme = this.themeService.getAccentTheme();
@@ -53,22 +56,22 @@ type formValue = "username" | "password";
         let userna = this.usernameValue.getValue()
         let pass = this.passValue
         if (userna && pass) {
-            this.authService.register(userna,pass).subscribe({
+            this.subs.add(this.authService.register(userna,pass).subscribe({
               next:res=>{
                 console.log("Registration Complete!");
                 console.log(res);
               },
               complete:()=>{
                 if (this.loginOnRegister == true) {
-                  this.authService.login(userna, pass).subscribe((val)=>{
+                  this.subs.add(this.authService.login(userna, pass).subscribe((val)=>{
                     if (val) {
                         console.log("Successful Login!");
                         console.log(val);
                     }
-                  }).unsubscribe()
+                  }))
                 }
               }
-            }).unsubscribe()
+            }))
         }
     }
 

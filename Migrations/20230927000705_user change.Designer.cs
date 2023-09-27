@@ -12,8 +12,8 @@ using sharpAngleTemplate.data;
 namespace SharpAnglesTemplate.Migrations
 {
     [DbContext(typeof(SharpAngleContext))]
-    [Migration("20230920192722_work move 2")]
-    partial class workmove2
+    [Migration("20230927000705_user change")]
+    partial class userchange
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,30 +24,6 @@ namespace SharpAnglesTemplate.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("NormalizedName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("IdentityRole");
-                });
 
             modelBuilder.Entity("sharpAngleTemplate.models.entities.Pokemon", b =>
                 {
@@ -123,13 +99,6 @@ namespace SharpAnglesTemplate.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
-                {
-                    b.HasOne("sharpAngleTemplate.models.entities.User", null)
-                        .WithMany("Roles")
-                        .HasForeignKey("UserId");
-                });
-
             modelBuilder.Entity("sharpAngleTemplate.models.entities.Pokemon", b =>
                 {
                     b.HasOne("sharpAngleTemplate.models.entities.Trainer", null)
@@ -140,11 +109,6 @@ namespace SharpAnglesTemplate.Migrations
             modelBuilder.Entity("sharpAngleTemplate.models.entities.Trainer", b =>
                 {
                     b.Navigation("Pokemon");
-                });
-
-            modelBuilder.Entity("sharpAngleTemplate.models.entities.User", b =>
-                {
-                    b.Navigation("Roles");
                 });
 #pragma warning restore 612, 618
         }

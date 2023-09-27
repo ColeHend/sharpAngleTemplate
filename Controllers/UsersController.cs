@@ -50,14 +50,31 @@ namespace sharpAngleTemplate.Controllers
 
             userRepository.CreatePasswordHash(user.Password, out byte[] passHash, out byte[] passSalt);
             // ------- change to something better proper roles ----
-            var roles = new List<string>(){"Guest"};
+            // var roles = new List<string>(){"Guest"};
+            var guestRole = new RoleEntity(){
+                Role="Guest"
+            };
+            var userRole = new RoleEntity(){
+                Role="User"
+            };
+            var adminRole = new RoleEntity(){
+                Role="Admin"
+            };
+            var roles = new List<RoleEntity>(){
+                guestRole
+            };
+            if (user.Username == "Admin")
+            {
+                roles.Add(userRole);
+                roles.Add(adminRole);    
+            }
             // var roles = new List<string>(){"Guest","User","Admin"};
             // ----------------------------------------------------
             var newUser = new models.entities.User(){
                 Username=user.Username,
                 PasswordHash=passHash,
                 PasswordSalt=passSalt,
-                userType=roles.ToArray(),
+                Roles=roles,
                 MoreData=user.MoreData
             };
             userDb.Add(newUser);
@@ -81,12 +98,12 @@ namespace sharpAngleTemplate.Controllers
                 {
                     Console.WriteLine("\nPassword Verified!\n");
                     var rollin = new List<string>();
-                    string[] backup = {"Guest"};
-                    string[] rolesEntity = userEntity.userType != null && userEntity.userType.Count() > 0 ? userEntity.userType : backup;
-                    foreach (var role in rolesEntity) 
-                    {
-                        rollin.Add(string.IsNullOrEmpty(role) ? "Guest": role);
-                    }
+                    var backup = new List<string>(){"Guest"};
+                    // var rolesEntity = userEntity.Roles != null && userEntity.Roles.Count() > 0 ? userEntity.Roles : backup;
+                    // foreach (var role in rolesEntity) 
+                    // {
+                    //     rollin.Add(string.IsNullOrEmpty(role) ? "Guest": role);
+                    // }
 
                     string token = TokenRepo.CreateJWTToken(userEntity, rollin);
                     var BuildTokenJson = (string token)=>{
@@ -153,7 +170,89 @@ namespace sharpAngleTemplate.Controllers
         }
 
         [HttpPost]
-        // [Authorize(Roles = "Guest;User;Admin")]
+        public async Task<IActionResult> VerifyGuest(){
+            var userId = await userRepository.GetUserId();
+            if (userId != null)
+            {
+                Console.WriteLine("User id found");
+                var users = await userRepository.GetAllUsers();
+                var userIndex = users.FindIndex((value)=>value.Id == userId);
+                if (userIndex > -1)
+                {
+                    Console.WriteLine("User Found");
+                    var user = users[userIndex];
+                    if (user.Roles != null)
+                    {
+                        string roleText = string.Join(",", user.Roles.Select(p => p.Role));
+                        Console.WriteLine("Roles: ", roleText);
+                        if (user.Roles.Select(r => r.Role).FirstOrDefault("Guest") != null)
+                        {
+                            Console.WriteLine("\n Guest Verified!\n");
+                            return Ok();
+                            
+                        }
+                    }
+                }
+            }
+            return Unauthorized();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> VerifyUser(){
+            var userId = await userRepository.GetUserId();
+            if (userId != null)
+            {
+                Console.WriteLine("User id found");
+                var users = await userRepository.GetAllUsers();
+                var userIndex = users.FindIndex((value)=>value.Id == userId);
+                if (userIndex > -1)
+                {
+                    Console.WriteLine("User Found");
+                    var user = users[userIndex];
+                    if (user.Roles != null)
+                    {
+                        string roleText = string.Join(",", user.Roles.Select(p => p.Role));
+                        Console.WriteLine("Roles: ", roleText);
+                        if (user.Roles.Select(r => r.Role).FirstOrDefault("User") != null)
+                        {
+                            Console.WriteLine("\n Guest Verified!\n");
+                            return Ok();
+                            
+                        }
+                    }
+                }
+            }
+            return Unauthorized();
+        }
+        
+        [HttpPost]
+        public async Task<IActionResult> VerifyAdmin(){
+            var userId = await userRepository.GetUserId();
+            if (userId != null)
+            {
+                Console.WriteLine("User id found");
+                var users = await userRepository.GetAllUsers();
+                var userIndex = users.FindIndex((value)=>value.Id == userId);
+                if (userIndex > -1)
+                {
+                    Console.WriteLine("User Found");
+                    var user = users[userIndex];
+                    if (user.Roles != null)
+                    {
+                        string roleText = string.Join(",", user.Roles.Select(p => p.Role));
+                        Console.WriteLine("Roles: {0}", roleText);
+                        if (user.Roles.Select(r => r.Role).FirstOrDefault("Admin") != null)
+                        {
+                            Console.WriteLine("\n Guest Verified!\n");
+                            return Ok();
+                        }
+                    }
+                }
+            }
+            return Unauthorized();
+        }
+
+        [HttpPost]
         public async Task<IActionResult> Get([FromBody] UserGetReq user)
         {
             if (user.Username != null)

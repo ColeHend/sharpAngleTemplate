@@ -2,10 +2,10 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, catchError, map, Observable, of, throwError } from 'rxjs';
 import { RegisterReq } from '../models/requests/register.model';
-import { switchMap, tap, timeout } from 'rxjs/operators';
+import { shareReplay, switchMap, take, tap, timeout } from 'rxjs/operators';
 import { UserResponse } from '../models/responses/userResponse.model';
 
-
+export type AuthLevels = "Guest"|"User"|"Admin";
 
 @Injectable({ providedIn: 'root' })
 /**
@@ -180,10 +180,52 @@ export class AuthService {
         }
     }
 
+    private guestAuth = new BehaviorSubject(false);
+    private userAuth = new BehaviorSubject(false);
+    private adminAuth = new BehaviorSubject(false);
+
+    
+    private authCheck(userType:AuthLevels){
+        return this.http.post(`/api/Users/Verify${userType}`,{}).pipe(catchError(err => {
+            if (userType === "Guest") {
+                this.guestAuth.next(false);
+                this.userAuth.next(false);
+                this.adminAuth.next(false);
+            }
+            if (userType === "User") {
+                this.userAuth.next(false);
+                this.adminAuth.next(false);
+            }
+            if (userType === "Admin") {
+                this.adminAuth.next(false);
+            }
+            
+            return throwError(() => err);
+        }))
+    }
+    public getIsGuest(){
+        this.authCheck("Guest").pipe(take(1)).subscribe((value)=>{
+            this.guestAuth.next(true)
+        })
+        return this.guestAuth
+    }
+    public getIsUser(){
+        this.authCheck("User").pipe(take(1)).subscribe((value)=>{
+            this.userAuth.next(true)
+        })
+        return this.userAuth
+    }
+    public getIsAdmin(){
+        this.authCheck("Admin").pipe(take(1)).subscribe((value)=>{
+            this.adminAuth.next(true)
+        })
+        return this.adminAuth
+    }
     /**
      * Checks if the user is logged in.
      * @returns An Observable that emits a boolean indicating if the user is logged in.
      */
+
     public isLoggedIn(): Observable<boolean> {
         this.alertLog.subscribe((value)=>{
             console.log(value);

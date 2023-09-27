@@ -11,8 +11,8 @@ namespace sharpAngleTemplate.Repositories
         Task<User?> GetUserId(int id);
         string? GetUsername();
         Task<List<User>> GetAllUsers();
-        Task<string[]> GetRoles(string username);
-        Task<string[]> GetRoles(int id);
+        Task<List<string>> GetRoles(string username);
+        Task<List<string>> GetRoles(int id);
         void CreatePasswordHash(string password, out byte[] passHash, out byte[] passSalt);
 
         bool VerifyPasswordHash(string password, byte[] passHash, byte[] passSalt);

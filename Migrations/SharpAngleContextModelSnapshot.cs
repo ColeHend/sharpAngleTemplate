@@ -22,30 +22,6 @@ namespace SharpAnglesTemplate.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("NormalizedName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("IdentityRole");
-                });
-
             modelBuilder.Entity("sharpAngleTemplate.models.entities.Pokemon", b =>
                 {
                     b.Property<int>("Id")
@@ -66,6 +42,28 @@ namespace SharpAnglesTemplate.Migrations
                     b.HasIndex("TrainerId");
 
                     b.ToTable("Pokemon");
+                });
+
+            modelBuilder.Entity("sharpAngleTemplate.models.entities.RoleEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("RoleEntity");
                 });
 
             modelBuilder.Entity("sharpAngleTemplate.models.entities.Trainer", b =>
@@ -120,18 +118,18 @@ namespace SharpAnglesTemplate.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
-                {
-                    b.HasOne("sharpAngleTemplate.models.entities.User", null)
-                        .WithMany("Roles")
-                        .HasForeignKey("UserId");
-                });
-
             modelBuilder.Entity("sharpAngleTemplate.models.entities.Pokemon", b =>
                 {
                     b.HasOne("sharpAngleTemplate.models.entities.Trainer", null)
                         .WithMany("Pokemon")
                         .HasForeignKey("TrainerId");
+                });
+
+            modelBuilder.Entity("sharpAngleTemplate.models.entities.RoleEntity", b =>
+                {
+                    b.HasOne("sharpAngleTemplate.models.entities.User", null)
+                        .WithMany("Roles")
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("sharpAngleTemplate.models.entities.Trainer", b =>
