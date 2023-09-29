@@ -97,8 +97,16 @@ namespace sharpAngleTemplate.Controllers
                 if (userRepository.VerifyPasswordHash(user.Password, userEntity.PasswordHash, userEntity.PasswordSalt))
                 {
                     Console.WriteLine("\nPassword Verified!\n");
-                    var rollin = userEntity.Roles.Select(r => r.Role).ToList();
                     var backup = new List<string>(){"Guest"};
+                    var totalUserEntity = await dbContext.Users.Include(u => u.Roles).FirstOrDefaultAsync(u => u.Id == userEntity.Id);
+                    List<string> rollin;
+                    if (totalUserEntity != null)
+                    {
+                        rollin = totalUserEntity.Roles.Select(r => r.Role).ToList();
+                    } else
+                    {
+                        rollin = userEntity.Roles.Select(r => r.Role).ToList();
+                    }
                     if (rollin == null || rollin.Count() < 1)
                     {
                         rollin = backup;
@@ -171,86 +179,21 @@ namespace sharpAngleTemplate.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Guest;User;Admin")]
         public async Task<IActionResult> VerifyGuest(){
-            var userId = await userRepository.GetUserId();
-            if (userId != null)
-            {
-                Console.WriteLine("User id found");
-                var users = await userRepository.GetAllUsers();
-                var userIndex = users.FindIndex((value)=>value.Id == userId);
-                if (userIndex > -1)
-                {
-                    Console.WriteLine("User Found");
-                    var user = users[userIndex];
-                    if (user.Roles != null)
-                    {
-                        string roleText = string.Join(",", user.Roles.Select(p => p.Role));
-                        Console.WriteLine("Roles: ", roleText);
-                        if (user.Roles.Select(r => r.Role).FirstOrDefault("Guest") != null)
-                        {
-                            Console.WriteLine("\n Guest Verified!\n");
-                            return Ok();
-                            
-                        }
-                    }
-                }
-            }
-            return Unauthorized();
+            return Ok();
         }
 
         [HttpPost]
+        [Authorize(Roles = "User;Admin")]
         public async Task<IActionResult> VerifyUser(){
-            var userId = await userRepository.GetUserId();
-            if (userId != null)
-            {
-                Console.WriteLine("User id found");
-                var users = await userRepository.GetAllUsers();
-                var userIndex = users.FindIndex((value)=>value.Id == userId);
-                if (userIndex > -1)
-                {
-                    Console.WriteLine("User Found");
-                    var user = users[userIndex];
-                    if (user.Roles != null)
-                    {
-                        string roleText = string.Join(",", user.Roles.Select(p => p.Role));
-                        Console.WriteLine("Roles: ", roleText);
-                        if (user.Roles.Select(r => r.Role).FirstOrDefault("User") != null)
-                        {
-                            Console.WriteLine("\n Guest Verified!\n");
-                            return Ok();
-                            
-                        }
-                    }
-                }
-            }
-            return Unauthorized();
+            return Ok();
         }
         
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> VerifyAdmin(){
-            var userId = await userRepository.GetUserId();
-            if (userId != null)
-            {
-                Console.WriteLine("User id found");
-                var users = await userRepository.GetAllUsers();
-                var userIndex = users.FindIndex((value)=>value.Id == userId);
-                if (userIndex > -1)
-                {
-                    Console.WriteLine("User Found");
-                    var user = users[userIndex];
-                    if (user.Roles != null)
-                    {
-                        string roleText = string.Join(",", user.Roles.Select(p => p.Role));
-                        Console.WriteLine("Roles: {0}", roleText);
-                        if (user.Roles.Select(r => r.Role).FirstOrDefault("Admin") != null)
-                        {
-                            Console.WriteLine("\n Guest Verified!\n");
-                            return Ok();
-                        }
-                    }
-                }
-            }
-            return Unauthorized();
+            return Ok();
         }
 
         [HttpPost]
