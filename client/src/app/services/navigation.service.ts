@@ -56,11 +56,8 @@ export class NavigationService {
     public setLoggedInMenu(){
         this.navbarService.setMenuItems(
             this.UserSettings, {
-                name:'Homebar',
-                callback:()=>{
-                    // this.showHomeBar();
-                }, 
-                tooltip:"Show Home Navbar"
+                name: 'Sea Tracker',
+                link: ['seaTrack']
             },
             {
                 name:'Change Theme', 
@@ -127,6 +124,14 @@ export class NavigationService {
         this.navbarService.showTabs()
         this.navbarService.setTabs({name:"Json Testing",link:["json"]}, { name:"Security",link:["/secure"]})
         // Icons on the right of the bar
+        this.navbarService.setSecondIcons({iconName:"home",link:[""],tooltip:'Home Screen'})
+    }
+
+    public showSeaTrackBar(){
+        this.hideAll();
+        this.navbarService.showSecondRow();
+        this.navbarService.showTabs();
+        this.navbarService.setTabs({name: "Board ", link: ['seaTrack','board']}, {name: "Other"})
         this.navbarService.setSecondIcons({iconName:"home",link:[""],tooltip:'Home Screen'})
     }
 }

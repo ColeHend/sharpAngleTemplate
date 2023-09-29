@@ -211,7 +211,7 @@ namespace sharpAngleTemplate.Controllers
         }
 
         [HttpPut]
-        [Authorize(Roles = "Guest;User;Admin")]
+        [Authorize(Policy = "GuestPolicy")]
         public async Task<IActionResult> Update([FromBody] UserUpdateReq user)
         {
             var userId = await userRepository.GetUserId();
@@ -247,7 +247,7 @@ namespace sharpAngleTemplate.Controllers
         }
 
         [HttpDelete]
-        [Authorize(Roles = "User;Admin")]
+        [Authorize(Policy = "AdminPolicy")]
         public async Task<IActionResult> Delete([FromBody] DeleteUserReq user)
         {
             var userDb = dbContext.Users;
