@@ -179,19 +179,19 @@ namespace sharpAngleTemplate.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Guest;User;Admin")]
+        [Authorize(Policy = "GuestPolicy")]
         public async Task<IActionResult> VerifyGuest(){
             return Ok();
         }
 
         [HttpPost]
-        [Authorize(Roles = "User;Admin")]
+        [Authorize(Policy = "UserPolicy")]
         public async Task<IActionResult> VerifyUser(){
             return Ok();
         }
         
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Policy = "AdminPolicy")]
         public async Task<IActionResult> VerifyAdmin(){
             return Ok();
         }
