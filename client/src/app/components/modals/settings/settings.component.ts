@@ -1,6 +1,6 @@
 import { Component } from "@angular/core";
-import { AuthLevels, AuthService } from "src/app/services/authorize.service";
-import { ThemeService } from "src/app/services/theme.service";
+import { AuthLevels, AuthService } from "../../../services/authorize.service";
+import { ThemeService } from "../../../services/theme.service";
 
 
 @Component({

@@ -7,10 +7,10 @@ import { UserResponse } from '../models/responses/userResponse.model';
 
 export type AuthLevels = "Guest"|"User"|"Admin";
 
-@Injectable({ providedIn: 'root' })
 /**
  * Service for managing user authentication and authorization.
- */
+*/
+@Injectable({ providedIn: 'root' })
 export class AuthService {
     /**
      * Constructor for AuthService.

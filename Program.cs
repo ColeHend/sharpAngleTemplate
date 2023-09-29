@@ -28,8 +28,8 @@ var location = "localDefault";
 // var location = "work";
 var connString = builder.Configuration.GetConnectionString(location);
 builder.Services.AddDbContext<SharpAngleContext>(options=>{
+    options.EnableDetailedErrors(true);
     options.UseSqlServer(connString);
-    options.UseLoggerFactory(LoggerFactory.Create(builder => builder.AddConsole()));
 });
 
 builder.Services.Configure<IdentityOptions>(options =>

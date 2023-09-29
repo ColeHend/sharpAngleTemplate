@@ -97,13 +97,14 @@ namespace sharpAngleTemplate.Controllers
                 if (userRepository.VerifyPasswordHash(user.Password, userEntity.PasswordHash, userEntity.PasswordSalt))
                 {
                     Console.WriteLine("\nPassword Verified!\n");
-                    var rollin = new List<string>();
+                    var rollin = userEntity.Roles.Select(r => r.Role).ToList();
                     var backup = new List<string>(){"Guest"};
-                    // var rolesEntity = userEntity.Roles != null && userEntity.Roles.Count() > 0 ? userEntity.Roles : backup;
-                    // foreach (var role in rolesEntity) 
-                    // {
-                    //     rollin.Add(string.IsNullOrEmpty(role) ? "Guest": role);
-                    // }
+                    if (rollin == null || rollin.Count() < 1)
+                    {
+                        rollin = backup;
+                        Console.WriteLine($"\nBackup Used: ");
+                    }
+                    Console.WriteLine($"\n{rollin.Stringify()}");
 
                     string token = TokenRepo.CreateJWTToken(userEntity, rollin);
                     var BuildTokenJson = (string token)=>{
