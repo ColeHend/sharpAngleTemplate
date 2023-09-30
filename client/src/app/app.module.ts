@@ -30,7 +30,7 @@ import { GuestSettingsComponent } from './components/modals/settings/guest/guest
 import { UserSettingsComponent } from './components/modals/settings/user/user.component';
 import { SeaTrackerComponent } from './components/seaTracker/seaTracker.component';
 import { SeaTrackBoard } from './components/seaTracker/board/board.component';
-
+import { MatGridListModule } from '@angular/material/grid-list';
 
 
 @NgModule({
@@ -62,7 +62,7 @@ import { SeaTrackBoard } from './components/seaTracker/board/board.component';
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
-    
+    MatGridListModule
   ],
   providers: [NavbarService, NavigationService,ThemeService,DBService,
     {

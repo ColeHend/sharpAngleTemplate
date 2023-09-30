@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { NavigationService } from "src/app/services/navigation.service";
 
 @Component({
@@ -8,6 +8,7 @@ import { NavigationService } from "src/app/services/navigation.service";
   })
   export class SeaTrackerComponent implements OnInit {
     constructor(private navService: NavigationService){}
+  
     public ngOnInit(): void {
         this.navService.showSeaTrackBar();
     }
