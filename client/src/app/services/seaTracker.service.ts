@@ -75,10 +75,10 @@ export class SeaTrackerService implements OnInit {
                 }
                 tilesArr = tilesArr.slice(index-1, 1);
             }
-                if (changeType === "increase" && tilesArr[index+1].rows === tilesArr[index].rows && tilesArr[index+1].cols === 1) {
-                    tilesArr[index].cols += 1;
-                    tilesArr = tilesArr.slice(index+1, 1)
-                } 
+            if (changeType === "increase" && tilesArr[index+1].rows === tilesArr[index].rows && tilesArr[index+1].cols === 1) {
+                tilesArr[index].cols += 1;
+                tilesArr = tilesArr.slice(index+1, 1)
+            } 
         }
         this.setTiles(tilesArr);
     }
