@@ -48,16 +48,17 @@ namespace sharpAngleTemplate.Repositories
             return userId;
         }
 
-        public async Task<string[]?> GetRoles(string username)
+        public async Task<List<string>?> GetRoles(string username)
         {
             var user = await this.GetUser(username);
-            return user?.userType;
+            
+            return user?.Roles?.Select(r => r.Role).ToList();
         }
 
-        public async Task<string[]?> GetRoles(int id)
+        public async Task<List<string>?> GetRoles(int id)
         {
             var user = await this.GetUserId(id);
-            return user?.userType;
+            return user?.Roles?.Select(r => r.Role).ToList();
         }
         public async Task<List<User>> GetAllUsers()
         {

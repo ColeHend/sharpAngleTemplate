@@ -1,8 +1,8 @@
 import { Component, OnInit } from "@angular/core";
 import { combineLatest } from "rxjs"
 import { FormControl } from "@angular/forms";
-import { AuthService } from "src/app/services/authorize.service";
-import { ThemeService, themes } from "src/app/services/theme.service";
+import { AuthService } from "../../../../services/authorize.service";
+import { ThemeService, themes } from "../../../../services/theme.service";
 
 @Component({
     selector: 'app-guestSettings',

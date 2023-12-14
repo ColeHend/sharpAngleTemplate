@@ -28,26 +28,11 @@ import { SettingsComponent } from './components/modals/settings/settings.compone
 import { AdminSettingsComponent } from './components/modals/settings/admin/admin.component';
 import { GuestSettingsComponent } from './components/modals/settings/guest/guest.component';
 import { UserSettingsComponent } from './components/modals/settings/user/user.component';
+import { SeaTrackerComponent } from './components/seaTracker/seaTracker.component';
+import { SeaTrackBoard } from './components/seaTracker/board/board.component';
+import { MatGridListModule } from '@angular/material/grid-list';
 
 
-const routes: Routes = [
-  {
-    path:'',
-    component: HomeComponent,
-  },
-  {
-    path:'json',
-    component: HomeJsonComponent,
-  },
-  {
-    path: 'secure',
-    component: HomeSecureComponent
-  },
-  {
-    path: '**',
-    component: HomeComponent
-  } 
-];
 @NgModule({
   declarations: [
     AppComponent,
@@ -64,18 +49,20 @@ const routes: Routes = [
     SettingsComponent,
     AdminSettingsComponent,
     GuestSettingsComponent,
-    UserSettingsComponent
+    UserSettingsComponent,
+    SeaTrackerComponent,
+    SeaTrackBoard
   ],
   imports: [
     BrowserModule,
-    RouterModule.forRoot(routes),
+    AppRoutingModule,
     NoopAnimationsModule,
     MaterialModule,
     CommonModule,
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
-    
+    MatGridListModule
   ],
   providers: [NavbarService, NavigationService,ThemeService,DBService,
     {

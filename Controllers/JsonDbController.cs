@@ -5,6 +5,7 @@ using Microsoft.OpenApi.Any;
 using sharpAngleTemplate.tools;
 using sharpAngleTemplate.Repositories;
 using sharpAngleTemplate.CustomActionFilters;
+using Microsoft.AspNetCore.Authorization;
 
 namespace sharpAngleTemplate.Controllers
 {
@@ -19,6 +20,7 @@ namespace sharpAngleTemplate.Controllers
         }
         // ---------------- Endpoints ------------------
         [HttpPost]
+        [Authorize(Roles = "Guest")]
         public IActionResult GetCollection([FromBody] GetCollectionReq request){
             Console.WriteLine("GetCollection: ",request.Stringify());
             var CollectionName = request.CollectionName;

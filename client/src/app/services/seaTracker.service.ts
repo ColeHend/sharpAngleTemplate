@@ -48,7 +48,40 @@ export class SeaTrackerService implements OnInit {
     public getTilesValue(){ return this.tiles.getValue(); }
     public getTiles(){ return this.tiles.asObservable().pipe(shareReplay(1)) }
     public setTiles(tiles:Tile[]){ this.tiles.next(tiles) }
-    
+    public setTileColumnSize(index:number,direction: colDirection, changeType:change){
+        let tilesArr = this.getTilesValue();
+        if (direction === "left") {
+            if (tilesArr[index].cols > 1 && changeType === "decrease") {
+                tilesArr[index].cols -= 1;
+                for (let i = 0; i < tilesArr[index].rows; i++) {
+                    let placeIndex = (index - 1) + (i * this.getRowsValue());
+                    tilesArr = tilesArr.splice(placeIndex,0,this.tileTemplate(`Tile ${placeIndex}`))
+                }
+                tilesArr = tilesArr.slice(index-1, 1);
+            }
+            if (changeType === "increase" && tilesArr[index-1].rows === tilesArr[index].rows && tilesArr[index-1].cols === 1) {
+                tilesArr[index].cols += 1;
+                for (let i = 0; i < tilesArr[index].rows; i++){
+                    let placeIndex = index - 1  + (i * this.getRowsValue());
+                    tilesArr = tilesArr.slice(placeIndex, 1);
+                }   
+            } 
+        } else {
+            if (tilesArr[index].cols > 1 && changeType === "decrease") {
+                tilesArr[index].cols -= 1;
+                for (let i = 0; i < tilesArr[index].rows; i++) {
+                    let placeIndex = index + tilesArr[index].cols + (i * this.getRowsValue());
+                    tilesArr = tilesArr.splice(placeIndex,0,this.tileTemplate(`Tile ${placeIndex}`))
+                }
+                tilesArr = tilesArr.slice(index-1, 1);
+            }
+            if (changeType === "increase" && tilesArr[index+1].rows === tilesArr[index].rows && tilesArr[index+1].cols === 1) {
+                tilesArr[index].cols += 1;
+                tilesArr = tilesArr.slice(index+1, 1)
+            } 
+        }
+        this.setTiles(tilesArr);
+    }
     public setTileRowSize(index:number,direction: rowDirection){
         const tilesArr = this.getTilesValue();
         const tile = tilesArr[index];

@@ -50,14 +50,31 @@ namespace sharpAngleTemplate.Controllers
 
             userRepository.CreatePasswordHash(user.Password, out byte[] passHash, out byte[] passSalt);
             // ------- change to something better proper roles ----
-            var roles = new List<string>(){"Guest"};
+            // var roles = new List<string>(){"Guest"};
+            var guestRole = new RoleEntity(){
+                Role="Guest"
+            };
+            var userRole = new RoleEntity(){
+                Role="User"
+            };
+            var adminRole = new RoleEntity(){
+                Role="Admin"
+            };
+            var roles = new List<RoleEntity>(){
+                guestRole
+            };
+            if (user.Username == "Admin")
+            {
+                roles.Add(userRole);
+                roles.Add(adminRole);    
+            }
             // var roles = new List<string>(){"Guest","User","Admin"};
             // ----------------------------------------------------
             var newUser = new models.entities.User(){
                 Username=user.Username,
                 PasswordHash=passHash,
                 PasswordSalt=passSalt,
-                userType=roles.ToArray(),
+                Roles=roles,
                 MoreData=user.MoreData
             };
             userDb.Add(newUser);
@@ -80,13 +97,22 @@ namespace sharpAngleTemplate.Controllers
                 if (userRepository.VerifyPasswordHash(user.Password, userEntity.PasswordHash, userEntity.PasswordSalt))
                 {
                     Console.WriteLine("\nPassword Verified!\n");
-                    var rollin = new List<string>();
-                    string[] backup = {"Guest"};
-                    string[] rolesEntity = userEntity.userType != null && userEntity.userType.Count() > 0 ? userEntity.userType : backup;
-                    foreach (var role in rolesEntity) 
+                    var backup = new List<string>(){"Guest"};
+                    var totalUserEntity = await dbContext.Users.Include(u => u.Roles).FirstOrDefaultAsync(u => u.Id == userEntity.Id);
+                    List<string> rollin;
+                    if (totalUserEntity != null)
                     {
-                        rollin.Add(string.IsNullOrEmpty(role) ? "Guest": role);
+                        rollin = totalUserEntity.Roles.Select(r => r.Role).ToList();
+                    } else
+                    {
+                        rollin = userEntity.Roles.Select(r => r.Role).ToList();
                     }
+                    if (rollin == null || rollin.Count() < 1)
+                    {
+                        rollin = backup;
+                        Console.WriteLine($"\nBackup Used: ");
+                    }
+                    Console.WriteLine($"\n{rollin.Stringify()}");
 
                     string token = TokenRepo.CreateJWTToken(userEntity, rollin);
                     var BuildTokenJson = (string token)=>{
@@ -153,7 +179,24 @@ namespace sharpAngleTemplate.Controllers
         }
 
         [HttpPost]
-        // [Authorize(Roles = "Guest;User;Admin")]
+        [Authorize(Policy = "GuestPolicy")]
+        public async Task<IActionResult> VerifyGuest(){
+            return Ok();
+        }
+
+        [HttpPost]
+        [Authorize(Policy = "UserPolicy")]
+        public async Task<IActionResult> VerifyUser(){
+            return Ok();
+        }
+        
+        [HttpPost]
+        [Authorize(Policy = "AdminPolicy")]
+        public async Task<IActionResult> VerifyAdmin(){
+            return Ok();
+        }
+
+        [HttpPost]
         public async Task<IActionResult> Get([FromBody] UserGetReq user)
         {
             if (user.Username != null)
@@ -168,7 +211,7 @@ namespace sharpAngleTemplate.Controllers
         }
 
         [HttpPut]
-        [Authorize(Roles = "Guest;User;Admin")]
+        [Authorize(Policy = "GuestPolicy")]
         public async Task<IActionResult> Update([FromBody] UserUpdateReq user)
         {
             var userId = await userRepository.GetUserId();
@@ -204,7 +247,7 @@ namespace sharpAngleTemplate.Controllers
         }
 
         [HttpDelete]
-        [Authorize(Roles = "User;Admin")]
+        [Authorize(Policy = "AdminPolicy")]
         public async Task<IActionResult> Delete([FromBody] DeleteUserReq user)
         {
             var userDb = dbContext.Users;
